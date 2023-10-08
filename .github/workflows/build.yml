@@ -1,0 +1,36 @@
+name: Build Workflow
+
+on:
+  [push, pull_request]
+
+jobs:
+  octave_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Octave
+        run: sudo apt-get install octave liboctave-dev build-essential
+
+      - name: Install Octave package
+        run: octave --eval "pkg install -forge image"
+
+      - name: Run Octave script for Part1
+        run: cd scripts && octave --eval "pkg load image; run('part1.m')"
+
+  matlab_build:
+    if: github.event.repository.private == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v1
+
+      - name: Run command for Part1
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath("scripts"), part1
