@@ -1,0 +1,21 @@
+name: Octave Workflow
+
+on:
+  [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Octave
+        run: sudo apt-get install octave
+
+      - name: Install Octave package
+        run: octave --eval "pkg install -forge image"
+
+      - name: Run Octave script for Part1
+        run: cd scripts && octave part1.m
