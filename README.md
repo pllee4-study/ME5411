@@ -7,6 +7,7 @@
 - Installation
 
 ```
+$ sudo apt-get install octave liboctave-dev build-essential
 $ pkg install -forge image
 ```
 
@@ -17,3 +18,4 @@ $ pkg load image
 ```
 
 ## MATLAB (Windows)
+- [Image Processing Toolbox](https://www.mathworks.com/products/image.html)
