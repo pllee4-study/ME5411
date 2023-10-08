@@ -4,12 +4,12 @@ on:
   [push, pull_request]
 
 jobs:
-  build:
+  octave_build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Octave
         run: sudo apt-get install octave liboctave-dev build-essential
