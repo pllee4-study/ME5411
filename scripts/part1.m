@@ -10,16 +10,24 @@ end
 
 if ~runInMatlab
     source('./utility/loadImageFromLocalOrOnline.m');
+    source('./part1/rgb2gray.m');
 else
     scriptPath = fileparts(mfilename('fullpath'));
     run(fullfile(scriptPath, './utility/loadImageFromLocalOrOnline.m'));
+    run(fullfile(scriptPath, './part1/rgb2gray.m'));
 end
 
 % Read the image
 img = imageLoaded;
 
+% Create a structuring element
+se = strel('disk', 8, 0);  % Create a disk-shaped structuring element with radius 8 pixels
+
+% Perform image filtering using the structuring element
+openedImage = imopen(img, se);  % Perform opening operation
+
 % Convert the image to grayscale
-imgGrayScale = rgb2gray(img);
+imgGrayScale = rgb2gray(openedImage);
 
 % Define the 3x3 and 5x5 averaging mask
 threeByThreeAverageMask = ones(3) / 9;
@@ -37,9 +45,15 @@ fiveByFiveRotMask = [-1 -1 -1 -1 -1; -1 1 2 1 -1; -1 2 4 2 -1; -1 1 2 1 -1; -1 -
 threeByThreeImgRotate = conv2(double(imgGrayScale), threeByThreeRotMask, 'same');
 fiveByFiveImgRotate = conv2(double(imgGrayScale), fiveByFiveRotMask, 'same');
 
+% Perform image filtering using the structuring element
+% dilatedImage = imdilate(img, se);  % Perform dilation
+% erodedImage = imerode(img, se);    % Perform erosion
+% closedImage = imclose(img, se);  % Perform closing operation
+
 % Display the original image and the processed images
 figure('Name', 'ME5411 Group 11');
-subplot(4, 2, [1,2]), imshow(img), title('Original Image');
+subplot(4, 2, 1), imshow(img), title('Original Image');
+subplot(4, 2, 2), imshow(openedImage), title('Opened Image');
 subplot(4, 2, 3), imshow(uint8(threeByThreeImgAverage)), title('Averaging Mask(3x3)');
 subplot(4, 2, 4), imshow(uint8(threeByThreeImgRotate)), title('Rotating Mask(3x3)');
 subplot(4, 2, 5), imshow(uint8(fiveByFiveImgAverage)), title('Averaging Mask(5x5)');
