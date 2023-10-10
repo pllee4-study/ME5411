@@ -2,6 +2,7 @@ if exist('OCTAVE_VERSION', 'builtin') == 5
     % Code specific to Octave
     disp('Running in Octave');
     runInMatlab = false;
+    pkg load image;
 else
     % Code specific to MATLAB
     disp('Running in MATLAB');  
@@ -46,29 +47,34 @@ threeByThreeImgRotate = conv2(double(imgGrayScale), threeByThreeRotMask, 'same')
 fiveByFiveImgRotate = conv2(double(imgGrayScale), fiveByFiveRotMask, 'same');
 
 % Perform image filtering using the structuring element
-% dilatedImage = imdilate(img, se);  % Perform dilation
-% erodedImage = imerode(img, se);    % Perform erosion
-% closedImage = imclose(img, se);  % Perform closing operation
+dilatedImage = imdilate(uint8(threeByThreeImgAverage), se);  % Perform dilation
+erodedImage = imerode(uint8(threeByThreeImgAverage), se);    % Perform erosion
+closedImage = imclose(uint8(threeByThreeImgAverage), se);  % Perform closing operation
+outlineImage = dilatedImage - erodedImage;
 
 % Display the original image and the processed images
 figure('Name', 'ME5411 Group 11');
-subplot(4, 2, 1), imshow(img), title('Original Image');
-subplot(4, 2, 2), imshow(openedImage), title('Opened Image');
-subplot(4, 2, 3), imshow(uint8(threeByThreeImgAverage)), title('Averaging Mask(3x3)');
-subplot(4, 2, 4), imshow(uint8(threeByThreeImgRotate)), title('Rotating Mask(3x3)');
-subplot(4, 2, 5), imshow(uint8(fiveByFiveImgAverage)), title('Averaging Mask(5x5)');
-subplot(4, 2, 6), imshow(uint8(fiveByFiveImgRotate)), title('Rotating Mask(5x5)');
+subplot(4, 3, 1), imshow(img), title('Original Image');
+subplot(4, 3, 2), imshow(openedImage), title('Opened Image');
+subplot(4, 3, 3), imshow(closedImage), title('Closed Image');
+subplot(4, 3, 4), imshow(uint8(threeByThreeImgAverage)), title('Averaging Mask(3x3)');
+subplot(4, 3, 5), imshow(uint8(threeByThreeImgRotate)), title('Rotating Mask(3x3)');
+subplot(4, 3, 6), imshow(dilatedImage), title('Dilated Image');
+subplot(4, 3, 7), imshow(uint8(fiveByFiveImgAverage)), title('Averaging Mask(5x5)');
+subplot(4, 3, 8), imshow(uint8(fiveByFiveImgRotate)), title('Rotating Mask(5x5)');
+subplot(4, 3, 9), imshow(erodedImage), title('Eroded Image');
+subplot(4, 3, 12), imshow(outlineImage), title('Outline Image');
 
-[rows, cols, ~] = size(img);
-subImage = img(rows/2+1:rows, :, :);
+[rows, cols, ~] = size(uint8(threeByThreeImgAverage));
+subImage = openedImage(rows/2+1:rows, :, :);
 
 grayScaleSubImage = rgb2gray(subImage);
 
 % Convert the grayscale image to binary
-binarySubImage = im2bw(grayScaleSubImage, 0.5);
+binarySubImage = im2bw(grayScaleSubImage, 0.37435);
 
-subplot(4, 2, 7), imshow(subImage), title('SubImage');
-subplot(4, 2, 8), imshow(binarySubImage), title('Binary SubImage');
+subplot(4, 3, 10), imshow(subImage), title('SubImage');
+subplot(4, 3, 11), imshow(binarySubImage), title('Binary SubImage');
 
 figPos = get(gcf, 'Position');
 figWidth = figPos(3);
@@ -90,9 +96,9 @@ function updateThreshold(sliderValue, grayScaleSubImage)
     threshold = get(sliderValue, 'Value');
     disp(threshold);
     try
-        binaryImage = im2bw(grayScaleSubImage, threshold);
+        binarySubImage = im2bw(grayScaleSubImage, threshold);
     catch ME
         error('Failed to convert the image to binary: %s', ME.message);
     end
-    subplot(4, 2, 8), imshow(binaryImage), title('Binary SubImage');
+    subplot(4, 3, 11), imshow(binarySubImage), title('Binary SubImage');
 end
