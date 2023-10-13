@@ -1,5 +1,5 @@
 onlineURLForImage = 'https://github-production-user-asset-6210df.s3.amazonaws.com/42335542/273423239-ea91ba6e-b53c-4308-9b78-77ab9766b220.jpg';
-localFilePathForImage = '../../assets/charact2.jpg';
+localFilePathForImage = '../../assets/charact2.bmp';
 
 try
     % Try loading the image from local source
