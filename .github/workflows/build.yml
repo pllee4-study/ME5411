@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Octave
-        run: sudo apt-get install octave liboctave-dev build-essential
+        run: sudo apt-get update && sudo apt install octave liboctave-dev build-essential
 
       - name: Install Octave package
         run: octave --eval "pkg install -forge image"
