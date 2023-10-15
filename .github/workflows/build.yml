@@ -21,7 +21,7 @@ jobs:
         run: cd scripts && octave --eval "pkg load image; run('part1.m')"
 
   matlab_build:
-    if: github.event.repository.private == 'false'
+    # if: github.event.repository.private == 'false'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
