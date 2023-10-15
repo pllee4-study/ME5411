@@ -14,8 +14,8 @@ if ~runInMatlab
     source('./part1/rgb2gray.m');
 else
     scriptPath = fileparts(mfilename('fullpath'));
-    run(fullfile(scriptPath, './utility/loadImageFromLocalOrOnline.m'));
-    run(fullfile(scriptPath, './part1/rgb2gray.m'));
+    rootPath = fileparts(scriptPath);
+    run(fullfile(rootPath, 'scripts/utility/loadImageFromLocalOrOnline.m'));
 end
 
 % Read the image
@@ -56,6 +56,13 @@ outlineImage = dilatedImage - erodedImage;
 figure('Name', 'ME5411 Group 11');
 subplot(4, 3, 1), imshow(img), title('Original Image');
 subplot(4, 3, 2), imshow(openedImage), title('Opened Image');
+
+if ~runInMatlab
+  filtered_image = imsmooth(rgb2gray(img), 'Disk');
+else
+  filtered_image = imgaussfilt(rgb2gray(img), 2);
+end
+
 subplot(4, 3, 3), imshow(closedImage), title('Closed Image');
 subplot(4, 3, 4), imshow(uint8(threeByThreeImgAverage)), title('Averaging Mask(3x3)');
 subplot(4, 3, 5), imshow(uint8(threeByThreeImgRotate)), title('Rotating Mask(3x3)');
@@ -71,7 +78,11 @@ subImage = openedImage(rows/2+1:rows, :, :);
 grayScaleSubImage = rgb2gray(subImage);
 
 % Convert the grayscale image to binary
-binarySubImage = im2bw(grayScaleSubImage, 0.37435);
+if ~runInMatlab
+    binarySubImage = im2bw(grayScaleSubImage, 0.35079); %0.3615
+else
+    binarySubImage = imbinarize(grayScaleSubImage, 'adaptive');
+end
 
 subplot(4, 3, 10), imshow(subImage), title('SubImage');
 subplot(4, 3, 11), imshow(binarySubImage), title('Binary SubImage');
