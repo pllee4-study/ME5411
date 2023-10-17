@@ -35,7 +35,7 @@ classdef ImagePreProcessingTuningTools  < handle
     methods(Access = private)
         function setupDiskRadiusSlider(obj)
             diskSliderTextLeft = 0.1 * obj.figWidth;  % 10% from the left edge of the figure
-            diskSliderTextBottom = 0.3 * obj.figHeight;  % 30% from the bottom edge of the figure
+            diskSliderTextBottom = 0.15 * obj.figHeight;  % 15% from the bottom edge of the figure
             diskSliderTextWidth = 0.25 * obj.figWidth;  % 25% of the width of the figure
             diskSliderTextHeight = 0.05 * obj.figHeight;  % 5% of the height of the figure
             
@@ -57,7 +57,7 @@ classdef ImagePreProcessingTuningTools  < handle
             if isempty(obj.diskRadiusUpdatedCallback)
                 disp('method setDiskRadiusUpdatedCallback from ImagePreProcessingTuningTools is not set!');
             else
-                obj.diskRadiusUpdatedCallback(int32(obj.diskSlider.Value));
+                obj.diskRadiusUpdatedCallback(obj.diskSlider.Value);
             end
         end
 
