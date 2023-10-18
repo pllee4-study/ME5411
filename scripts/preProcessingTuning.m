@@ -14,7 +14,7 @@ figPos = get(gcf, 'Position');
 figSize.width = figPos(3);
 figSize.height = figPos(4);
 
-defaultValues.radius = 6;
+defaultValues.radius = 8;
 defaultValues.threshold = 100;
 defaultValues.sigma = 4;
 
@@ -26,11 +26,41 @@ global preprocessor;
 preprocessor = ImagePreProcessor(imageLoaded, defaultValues);
 
 global openedImage;
-ImagePreProcessingTuningPlot.plot(openedImage);
+
+global openedThenAdjustImage;
+global adjustedThenOpenImage;
+
+global gaussOpenedImage;
+global gaussAdjustedImage;
+global gaussAdjustedThenOpenImage;
+global gaussOpenedThenAdjustImage;
+
+global adjustedImage;
+
+ImagePreProcessingTuningPlot.plot("OpenedImage", openedImage);
+ImagePreProcessingTuningPlot.plot("OpenedThenAdjustImage", openedThenAdjustImage);
+ImagePreProcessingTuningPlot.plot("AdjustedThenOpenImage", adjustedThenOpenImage);
+ImagePreProcessingTuningPlot.plot("AdjustedImage", adjustedImage);
+ImagePreProcessingTuningPlot.plot("GaussOpenedImage", gaussOpenedImage);
+ImagePreProcessingTuningPlot.plot("GaussAdjustedThenOpenImage", gaussAdjustedThenOpenImage);
+ImagePreProcessingTuningPlot.plot("GaussOpenedThenAdjustImage", gaussOpenedThenAdjustImage);
 
 function diskRadiusUpdatedCallback(value)
     global preprocessor;
     preprocessor.updateDiskRadius(value);
+
     global openedImage;
-    ImagePreProcessingTuningPlot.plot(openedImage);
+    global openedThenAdjustImage;
+    global adjustedThenOpenImage;
+    global gaussOpenedImage;
+    global gaussAdjustedThenOpenImage;
+    global gaussOpenedThenAdjustImage;
+
+    % replot any processing related to open
+    ImagePreProcessingTuningPlot.plot("OpenedImage", openedImage);
+    ImagePreProcessingTuningPlot.plot("OpenedThenAdjustImage", openedThenAdjustImage);
+    ImagePreProcessingTuningPlot.plot("AdjustedThenOpenImage", adjustedThenOpenImage);
+    ImagePreProcessingTuningPlot.plot("GaussOpenedImage", gaussOpenedImage);
+    ImagePreProcessingTuningPlot.plot("GaussAdjustedThenOpenImage", gaussAdjustedThenOpenImage);
+    ImagePreProcessingTuningPlot.plot("GaussOpenedThenAdjustImage", gaussOpenedThenAdjustImage);
 end
