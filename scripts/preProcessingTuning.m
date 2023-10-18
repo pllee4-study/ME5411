@@ -21,6 +21,7 @@ defaultValues.sigma = 4;
 % ImagePreProcessingTuningTools
 tuningTools = ImagePreProcessingTuningTools(figSize, defaultValues);
 tuningTools.setDiskRadiusUpdatedCallback(@diskRadiusUpdatedCallback);
+tuningTools.setGaussSigmaUpdatedCallback(@sigmaUpdatedCallback);
 
 global preprocessor;
 preprocessor = ImagePreProcessor(imageLoaded, defaultValues);
@@ -60,6 +61,20 @@ function diskRadiusUpdatedCallback(value)
     ImagePreProcessingTuningPlot.plot("OpenedImage", openedImage);
     ImagePreProcessingTuningPlot.plot("OpenedThenAdjustImage", openedThenAdjustImage);
     ImagePreProcessingTuningPlot.plot("AdjustedThenOpenImage", adjustedThenOpenImage);
+    ImagePreProcessingTuningPlot.plot("GaussOpenedImage", gaussOpenedImage);
+    ImagePreProcessingTuningPlot.plot("GaussAdjustedThenOpenImage", gaussAdjustedThenOpenImage);
+    ImagePreProcessingTuningPlot.plot("GaussOpenedThenAdjustImage", gaussOpenedThenAdjustImage);
+end
+
+function sigmaUpdatedCallback(value)
+    global preprocessor;
+    preprocessor.updateGaussSigma(value);
+
+    global gaussOpenedImage;
+    global gaussAdjustedThenOpenImage;
+    global gaussOpenedThenAdjustImage;
+
+    % replot any processing related to gaussian filtering
     ImagePreProcessingTuningPlot.plot("GaussOpenedImage", gaussOpenedImage);
     ImagePreProcessingTuningPlot.plot("GaussAdjustedThenOpenImage", gaussAdjustedThenOpenImage);
     ImagePreProcessingTuningPlot.plot("GaussOpenedThenAdjustImage", gaussOpenedThenAdjustImage);
