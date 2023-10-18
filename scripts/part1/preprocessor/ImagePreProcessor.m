@@ -17,6 +17,7 @@ classdef ImagePreProcessor
             adjustedImage = imadjust(rgb2gray(obj.image));
 
             obj.performMorphologicalProcess();
+            obj.performSigmaUpdate();
         end
 
         function updateDiskRadius(obj, radius)
@@ -26,6 +27,7 @@ classdef ImagePreProcessor
 
         function updateGaussSigma(obj, sigma)
             obj.sigma = sigma;
+            obj.performSigmaUpdate();
         end
 
     end
@@ -38,15 +40,15 @@ classdef ImagePreProcessor
             obj.performOpenImageUpdate();
         end
 
-        function performAllProcessing(obj)
-            obj.performMorphologicalProcess();
-        end
-
         function performOpenImageUpdate(obj)
             obj.openThenAdjustImage();
             obj.adjustedThenOpenImage();
 
             % The sequence here is crucial
+            obj.performSigmaUpdate();
+        end
+
+        function performSigmaUpdate(obj)
             obj.gaussOpenedImage();
             obj.gaussOpenedThenAdjustedImage();
             obj.gaussAdjustedThenOpenImage();
