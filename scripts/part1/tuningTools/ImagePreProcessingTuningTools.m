@@ -10,6 +10,7 @@ classdef ImagePreProcessingTuningTools  < handle
         % Callbacks
         diskRadiusUpdatedCallback
         gaussSigmaUpdatedCallback
+        binaryThresholdUpdatedCallback
 
         % For disk radius
         diskSliderText
@@ -20,6 +21,8 @@ classdef ImagePreProcessingTuningTools  < handle
         sigmaSlider
 
         % For binary threshold
+        binaryThresholdSliderText
+        binaryThresholdSlider
     end
 
     methods
@@ -30,6 +33,7 @@ classdef ImagePreProcessingTuningTools  < handle
 
             obj.setupDiskRadiusSlider();
             obj.setupSigmaSlider();
+            obj.setupBinaryThresholdSlider();
         end
 
         function setDiskRadiusUpdatedCallback(obj, callback)
@@ -38,6 +42,10 @@ classdef ImagePreProcessingTuningTools  < handle
 
         function setGaussSigmaUpdatedCallback(obj, callback)
             obj.gaussSigmaUpdatedCallback = callback;
+        end
+
+        function setBinaryThresholdUpdatedCallback(obj, callback)
+            obj.binaryThresholdUpdatedCallback = callback;
         end
     end
     
@@ -84,7 +92,7 @@ classdef ImagePreProcessingTuningTools  < handle
             sigmaSliderHeight = sigmaSliderTextHeight;
 
             obj.sigmaSlider = uicontrol('style', 'slider', 'position', [sigmaSliderLeft, sigmaSliderBottom, sigmaSliderWidth, sigmaSliderHeight]);
-            set(obj.sigmaSlider, 'Min', 1, 'Max', 10, 'Value', obj.defaultValues.radius, 'SliderStep', [1.0 2.0], 'Tag', 'DiskSlider');
+            set(obj.sigmaSlider, 'Min', 1, 'Max', 10, 'Value', obj.defaultValues.radius, 'SliderStep', [1.0 2.0], 'Tag', 'SigmaSlider');
 
             addlistener(obj.sigmaSlider, 'ContinuousValueChange', @(~, ~) obj.updateSigma());
         end
@@ -98,5 +106,32 @@ classdef ImagePreProcessingTuningTools  < handle
             end
         end
 
+        function setupBinaryThresholdSlider(obj)
+            binaryThresholdSliderTextLeft = 0.1 * obj.figWidth;  % 10% from the left edge of the figure
+            binaryThresholdSliderTextBottom = 0.05 * obj.figHeight;  % 0.05% from the bottom edge of the figure
+            binaryThresholdSliderTextWidth = 0.25 * obj.figWidth;  % 25% of the width of the figure
+            binaryThresholdSliderTextHeight = 0.05 * obj.figHeight;  % 5% of the height of the figure
+
+            obj.binaryThresholdSliderText = uicontrol('style', 'text', 'position', [binaryThresholdSliderTextLeft, binaryThresholdSliderTextBottom, binaryThresholdSliderTextWidth, binaryThresholdSliderTextHeight], 'String', sprintf('Binary threshold: %d', obj.defaultValues.threshold));
+
+            binaryThresholdSliderLeft = binaryThresholdSliderTextLeft + binaryThresholdSliderTextWidth;
+            binaryThresholdSliderBottom = binaryThresholdSliderTextBottom;
+            binaryThresholdSliderWidth = 0.4 * obj.figWidth;
+            binaryThresholdSliderHeight = binaryThresholdSliderTextHeight;
+
+            obj.binaryThresholdSlider = uicontrol('style', 'slider', 'position', [binaryThresholdSliderLeft, binaryThresholdSliderBottom, binaryThresholdSliderWidth, binaryThresholdSliderHeight]);
+            set(obj.binaryThresholdSlider, 'Min', 1, 'Max', 255, 'Value', obj.defaultValues.threshold, 'SliderStep', [1.0 2.0], 'Tag', 'BinaryThresholdSlider');
+
+            addlistener(obj.binaryThresholdSlider, 'ContinuousValueChange', @(~, ~) obj.updateThreshold());
+        end
+
+        function updateThreshold(obj)
+            set(obj.binaryThresholdSliderText, 'String', sprintf('Binary threshold: %d', int32(obj.binaryThresholdSlider.Value)));
+            if isempty(obj.binaryThresholdUpdatedCallback)
+                disp('method setBinaryThresholdUpdatedCallback from ImagePreProcessingTuningTools is not set!');
+            else
+                obj.binaryThresholdUpdatedCallback(obj.binaryThresholdSlider.Value);
+            end
+        end
     end
 end
