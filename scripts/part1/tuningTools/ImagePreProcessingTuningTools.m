@@ -112,7 +112,7 @@ classdef ImagePreProcessingTuningTools  < handle
             binaryThresholdSliderTextWidth = 0.25 * obj.figWidth;  % 25% of the width of the figure
             binaryThresholdSliderTextHeight = 0.05 * obj.figHeight;  % 5% of the height of the figure
 
-            obj.binaryThresholdSliderText = uicontrol('style', 'text', 'position', [binaryThresholdSliderTextLeft, binaryThresholdSliderTextBottom, binaryThresholdSliderTextWidth, binaryThresholdSliderTextHeight], 'String', sprintf('Binary threshold: %d', obj.defaultValues.threshold));
+            obj.binaryThresholdSliderText = uicontrol('style', 'text', 'position', [binaryThresholdSliderTextLeft, binaryThresholdSliderTextBottom, binaryThresholdSliderTextWidth, binaryThresholdSliderTextHeight], 'String', sprintf('Binary threshold: %f', obj.defaultValues.threshold));
 
             binaryThresholdSliderLeft = binaryThresholdSliderTextLeft + binaryThresholdSliderTextWidth;
             binaryThresholdSliderBottom = binaryThresholdSliderTextBottom;
@@ -120,13 +120,13 @@ classdef ImagePreProcessingTuningTools  < handle
             binaryThresholdSliderHeight = binaryThresholdSliderTextHeight;
 
             obj.binaryThresholdSlider = uicontrol('style', 'slider', 'position', [binaryThresholdSliderLeft, binaryThresholdSliderBottom, binaryThresholdSliderWidth, binaryThresholdSliderHeight]);
-            set(obj.binaryThresholdSlider, 'Min', 1, 'Max', 255, 'Value', obj.defaultValues.threshold, 'SliderStep', [1.0 2.0], 'Tag', 'BinaryThresholdSlider');
+            set(obj.binaryThresholdSlider, 'Min', 0, 'Max', 1, 'Value', obj.defaultValues.threshold, 'SliderStep', [0.01 0.1], 'Tag', 'BinaryThresholdSlider');
 
             addlistener(obj.binaryThresholdSlider, 'ContinuousValueChange', @(~, ~) obj.updateThreshold());
         end
 
         function updateThreshold(obj)
-            set(obj.binaryThresholdSliderText, 'String', sprintf('Binary threshold: %d', int32(obj.binaryThresholdSlider.Value)));
+            set(obj.binaryThresholdSliderText, 'String', sprintf('Binary threshold: %f', obj.binaryThresholdSlider.Value));
             if isempty(obj.binaryThresholdUpdatedCallback)
                 disp('method setBinaryThresholdUpdatedCallback from ImagePreProcessingTuningTools is not set!');
             else
