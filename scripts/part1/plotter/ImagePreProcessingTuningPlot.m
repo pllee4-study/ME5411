@@ -20,23 +20,37 @@ classdef ImagePreProcessingTuningPlot
                     subplot(5, 4, 8), imshow(figures), title(name);
 
                 case "BinarizedOpenedImage"
-                    subplot(5, 4, 9), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 9, figures, name, false);
                 case "BinarizedOpenedThenAdjustImage"
-                    subplot(5, 4, 10), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 10, figures, name, false);
                 case "BinarizedAdjustedThenOpenImage"
-                    subplot(5, 4, 11), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 11, figures, name, false);
                 case "BinarizedAdjustedImage"
-                    subplot(5, 4, 12), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 12, figures, name, false);
                 case "BinarizedGaussOpenedImage"
-                    subplot(5, 4, 13), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 13, figures, name, true);
                 case "BinarizedGaussOpenedThenAdjustImage"
-                    subplot(5, 4, 14), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 14, figures, name, true);
                 case "BinarizedGaussAdjustedThenOpenImage"
-                    subplot(5, 4, 15), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 15, figures, name, true);
                 case "BinarizedGaussAdjustedImage"
-                    subplot(5, 4, 16), imshow(figures), title(name);
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 16, figures, name, true);
                 otherwise
             end 
+        end
+
+        function plotDetail(row, column, index, figures, name, showSegmentedCharacter)
+            if (showSegmentedCharacter)
+                cc = bwconncomp(figures, 4);
+                props = regionprops(cc, 'BoundingBox');
+                subplot(row, column, index), imshow(figures), title(name);
+                hold on;
+                for i = 1:numel(props)
+                    rectangle('Position', props(i).BoundingBox, 'EdgeColor', 'r', 'LineWidth', 2);
+                end
+            else
+                subplot(row, column, index), imshow(figures), title(name);
+            end
         end
     end
 end
