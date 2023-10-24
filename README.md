@@ -1,4 +1,5 @@
 # ME5411 - CA 2023 Group 11
+[![Build Workflow](https://github.com/pllee4-study/ME5411/actions/workflows/build.yml/badge.svg)](https://github.com/pllee4-study/ME5411/actions/workflows/build.yml)
 
 ## Instructions
 
