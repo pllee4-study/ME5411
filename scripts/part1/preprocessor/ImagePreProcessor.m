@@ -135,17 +135,17 @@ classdef ImagePreProcessor
 
             global binarizedAdjustedImage;
 
-            binarizedOpenedImage = im2bw(rgb2gray(openedImage), obj.threshold);
-            binarizedOpenedThenAdjustImage = im2bw(openedThenAdjustImage, obj.threshold);
-            binarizedAdjustedThenOpenImage = im2bw(adjustedThenOpenImage, obj.threshold);
+            binarizedOpenedImage = imbinarize(rgb2gray(openedImage), obj.threshold);
+            binarizedOpenedThenAdjustImage = imbinarize(openedThenAdjustImage, obj.threshold);
+            binarizedAdjustedThenOpenImage = imbinarize(adjustedThenOpenImage, obj.threshold);
     
-            binarizedGaussOpenedImage = im2bw(gaussOpenedImage, obj.threshold);
-            binarizedGaussAdjustedImage = im2bw(gaussAdjustedImage, obj.threshold);
-            binarizedGaussAdjustedThenOpenImage = im2bw(gaussAdjustedThenOpenImage, obj.threshold);
+            binarizedGaussOpenedImage = imbinarize(gaussOpenedImage, obj.threshold);
+            binarizedGaussAdjustedImage = imbinarize(gaussAdjustedImage, obj.threshold);
+            binarizedGaussAdjustedThenOpenImage = imbinarize(gaussAdjustedThenOpenImage, obj.threshold);
 
-            binarizedGaussOpenedThenAdjustImage = im2bw(gaussOpenedThenAdjustImage, obj.threshold);
+            binarizedGaussOpenedThenAdjustImage = imbinarize(gaussOpenedThenAdjustImage, obj.threshold);
 
-            binarizedAdjustedImage = im2bw(adjustedImage, obj.threshold);
+            binarizedAdjustedImage = imbinarize(adjustedImage, obj.threshold);
         end
     end
 end
