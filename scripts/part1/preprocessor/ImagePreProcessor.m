@@ -54,6 +54,7 @@ classdef ImagePreProcessor
 
             % The sequence here is crucial
             obj.performSigmaUpdate();
+            obj.erodeImage();
         end
 
         function performSigmaUpdate(obj)
@@ -67,6 +68,7 @@ classdef ImagePreProcessor
 
         function performThresholdUpdate(obj)
             obj.binarizeImage();
+            obj.erodeImage();
         end
 
         function openThenAdjustImage(obj)
@@ -80,7 +82,18 @@ classdef ImagePreProcessor
             global adjustedThenOpenImage;
             global adjustedImage;
             se = strel('disk', floor(obj.radius), 0);
+            % se = strel('line', obj.radius, 90);
             adjustedThenOpenImage = imopen(adjustedImage, se);
+        end
+
+        function erodeImage(obj)
+            global binarizedGaussAdjustedThenOpenImage;
+            global binarizedGaussOpenedImage;
+            global erodedImage;
+            % se = strel('disk', floor(obj.radius), 0);
+            se = strel('line', obj.radius, 90);
+            erodedImage = imerode(binarizedGaussOpenedImage, se);    % Perform erosion
+            erodedImage = bwareaopen(erodedImage, 100);
         end
 
         function gaussOpenedImage(obj)
