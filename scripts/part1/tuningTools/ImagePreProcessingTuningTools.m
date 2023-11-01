@@ -92,7 +92,7 @@ classdef ImagePreProcessingTuningTools  < handle
             sigmaSliderHeight = sigmaSliderTextHeight;
 
             obj.sigmaSlider = uicontrol('style', 'slider', 'position', [sigmaSliderLeft, sigmaSliderBottom, sigmaSliderWidth, sigmaSliderHeight]);
-            set(obj.sigmaSlider, 'Min', 1, 'Max', 10, 'Value', obj.defaultValues.radius, 'SliderStep', [1.0 2.0], 'Tag', 'SigmaSlider');
+            set(obj.sigmaSlider, 'Min', 1, 'Max', 10, 'Value', obj.defaultValues.sigma, 'SliderStep', [1.0 2.0], 'Tag', 'SigmaSlider');
 
             addlistener(obj.sigmaSlider, 'ContinuousValueChange', @(~, ~) obj.updateSigma());
         end
