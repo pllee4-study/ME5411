@@ -64,7 +64,7 @@ classdef ImagePreProcessingTuningTools  < handle
             diskSliderHeight = diskSliderTextHeight;
 
             obj.diskSlider = uicontrol('style', 'slider', 'position', [diskSliderLeft, diskSliderBottom, diskSliderWidth, diskSliderHeight]);
-            set(obj.diskSlider, 'Min', 1, 'Max', 10, 'Value', obj.defaultValues.radius, 'SliderStep', [1.0 2.0], 'Tag', 'DiskSlider');
+            set(obj.diskSlider, 'Min', 1, 'Max', 20, 'Value', obj.defaultValues.radius, 'SliderStep', [1.0 2.0], 'Tag', 'DiskSlider');
 
             addlistener(obj.diskSlider, 'ContinuousValueChange', @(~, ~) obj.updateDiskRadius());
         end
