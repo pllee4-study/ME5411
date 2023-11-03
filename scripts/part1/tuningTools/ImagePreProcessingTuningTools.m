@@ -8,13 +8,13 @@ classdef ImagePreProcessingTuningTools  < handle
         defaultValues
 
         % Callbacks
-        diskRadiusUpdatedCallback
+        lineLengthUpdatedCallback
         gaussSigmaUpdatedCallback
         binaryThresholdUpdatedCallback
 
-        % For disk radius
-        diskSliderText
-        diskSlider
+        % For disk length
+        lineSliderText
+        lineSlider
 
         % For Gaussian sigma
         sigmaSliderText
@@ -31,13 +31,13 @@ classdef ImagePreProcessingTuningTools  < handle
             obj.figHeight = figSize.height;
             obj.defaultValues = defaultValues;
 
-            obj.setupDiskRadiusSlider();
+            obj.setupLineLengthSlider();
             obj.setupSigmaSlider();
             obj.setupBinaryThresholdSlider();
         end
 
-        function setDiskRadiusUpdatedCallback(obj, callback)
-            obj.diskRadiusUpdatedCallback = callback;
+        function setLineLengthUpdatedCallback(obj, callback)
+            obj.lineLengthUpdatedCallback = callback;
         end
 
         function setGaussSigmaUpdatedCallback(obj, callback)
@@ -50,31 +50,31 @@ classdef ImagePreProcessingTuningTools  < handle
     end
     
     methods(Access = private)
-        function setupDiskRadiusSlider(obj)
-            diskSliderTextLeft = 0.1 * obj.figWidth;  % 10% from the left edge of the figure
-            diskSliderTextBottom = 0.15 * obj.figHeight;  % 15% from the bottom edge of the figure
-            diskSliderTextWidth = 0.25 * obj.figWidth;  % 25% of the width of the figure
-            diskSliderTextHeight = 0.05 * obj.figHeight;  % 5% of the height of the figure
+        function setupLineLengthSlider(obj)
+            lineSliderTextLeft = 0.1 * obj.figWidth;  % 10% from the left edge of the figure
+            lineSliderTextBottom = 0.15 * obj.figHeight;  % 15% from the bottom edge of the figure
+            lineSliderTextWidth = 0.25 * obj.figWidth;  % 25% of the width of the figure
+            lineSliderTextHeight = 0.05 * obj.figHeight;  % 5% of the height of the figure
             
-            obj.diskSliderText = uicontrol('style', 'text', 'position', [diskSliderTextLeft, diskSliderTextBottom, diskSliderTextWidth, diskSliderTextHeight], 'String', sprintf('Disk radius: %d', obj.defaultValues.radius));
+            obj.lineSliderText = uicontrol('style', 'text', 'position', [lineSliderTextLeft, lineSliderTextBottom, lineSliderTextWidth, lineSliderTextHeight], 'String', sprintf('Disk length: %d', obj.defaultValues.length));
 
-            diskSliderLeft = diskSliderTextLeft + diskSliderTextWidth;
-            diskSliderBottom = diskSliderTextBottom;
+            diskSliderLeft = lineSliderTextLeft + lineSliderTextWidth;
+            diskSliderBottom = lineSliderTextBottom;
             diskSliderWidth = 0.4 * obj.figWidth;
-            diskSliderHeight = diskSliderTextHeight;
+            diskSliderHeight = lineSliderTextHeight;
 
-            obj.diskSlider = uicontrol('style', 'slider', 'position', [diskSliderLeft, diskSliderBottom, diskSliderWidth, diskSliderHeight]);
-            set(obj.diskSlider, 'Min', 1, 'Max', 20, 'Value', obj.defaultValues.radius, 'SliderStep', [1.0 2.0], 'Tag', 'DiskSlider');
+            obj.lineSlider = uicontrol('style', 'slider', 'position', [diskSliderLeft, diskSliderBottom, diskSliderWidth, diskSliderHeight]);
+            set(obj.lineSlider, 'Min', 1, 'Max', 20, 'Value', obj.defaultValues.length, 'SliderStep', [1.0 2.0], 'Tag', 'LineSlider');
 
-            addlistener(obj.diskSlider, 'ContinuousValueChange', @(~, ~) obj.updateDiskRadius());
+            addlistener(obj.lineSlider, 'ContinuousValueChange', @(~, ~) obj.updateLineLength());
         end
 
-        function updateDiskRadius(obj)
-            set(obj.diskSliderText, 'String', sprintf('Disk radius: %d', int32(obj.diskSlider.Value)));
-            if isempty(obj.diskRadiusUpdatedCallback)
-                disp('method setDiskRadiusUpdatedCallback from ImagePreProcessingTuningTools is not set!');
+        function updateLineLength(obj)
+            set(obj.lineSliderText, 'String', sprintf('Line length: %d', int32(obj.lineSlider.Value)));
+            if isempty(obj.lineLengthUpdatedCallback)
+                disp('method setLineLengthUpdatedCallback from ImagePreProcessingTuningTools is not set!');
             else
-                obj.diskRadiusUpdatedCallback(obj.diskSlider.Value);
+                obj.lineLengthUpdatedCallback(obj.lineSlider.Value);
             end
         end
 

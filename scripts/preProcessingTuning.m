@@ -14,13 +14,13 @@ figPos = get(gcf, 'Position');
 figSize.width = figPos(3);
 figSize.height = figPos(4);
 
-defaultValues.radius = 4;
-defaultValues.threshold = 0.457143;
-defaultValues.sigma = 4;
+defaultValues.length = 11;
+defaultValues.threshold = 0.417143;
+defaultValues.sigma = 2;
 
 % ImagePreProcessingTuningTools
 tuningTools = ImagePreProcessingTuningTools(figSize, defaultValues);
-tuningTools.setDiskRadiusUpdatedCallback(@diskRadiusUpdatedCallback);
+tuningTools.setLineLengthUpdatedCallback(@lineLengthUpdatedCallback);
 tuningTools.setGaussSigmaUpdatedCallback(@sigmaUpdatedCallback);
 tuningTools.setBinaryThresholdUpdatedCallback(@thresholdUpdatedCallback);
 
@@ -69,9 +69,9 @@ ImagePreProcessingTuningPlot.plot("BinarizedGaussAdjustedThenOpenImage", binariz
 ImagePreProcessingTuningPlot.plot("BinarizedGaussOpenedThenAdjustImage", binarizedGaussOpenedThenAdjustImage);
 ImagePreProcessingTuningPlot.plot("BinarizedAdjustedImage", binarizedAdjustedImage);
 
-function diskRadiusUpdatedCallback(value)
+function lineLengthUpdatedCallback(value)
     global preprocessor;
-    preprocessor.updateDiskRadius(value);
+    preprocessor.updateLineLength(value);
 
     global openedImage;
     global openedThenAdjustImage;

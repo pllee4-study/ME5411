@@ -2,7 +2,7 @@ classdef ImagePreProcessor
     properties
         image
 
-        radius
+        length
 
         sigma
 
@@ -12,7 +12,7 @@ classdef ImagePreProcessor
     methods
         function obj = ImagePreProcessor(image, defaultValues)
             obj.image = image;
-            obj.radius = defaultValues.radius;
+            obj.length = defaultValues.length;
             obj.sigma = defaultValues.sigma;
             obj.threshold = defaultValues.threshold;
 
@@ -23,8 +23,8 @@ classdef ImagePreProcessor
             obj.performSigmaUpdate();
         end
 
-        function updateDiskRadius(obj, radius)
-            obj.radius = radius;
+        function updateLineLength(obj, length)
+            obj.length = length;
             obj.performMorphologicalProcess();
         end
 
@@ -42,7 +42,7 @@ classdef ImagePreProcessor
 
     methods(Access = private)
         function performMorphologicalProcess(obj)
-            se = strel('disk', floor(obj.radius), 0);  % Create a disk-shaped structuring element with radius 6 pixels
+            se = strel('line', obj.length, 90); % Create a line-shaped structuring element with angle of 90
             global openedImage;
             openedImage = imopen(obj.image, se);  % Perform opening operation
             obj.performOpenImageUpdate();
@@ -81,8 +81,7 @@ classdef ImagePreProcessor
         function adjustedThenOpenImage(obj)
             global adjustedThenOpenImage;
             global adjustedImage;
-            se = strel('disk', floor(obj.radius), 0);
-            % se = strel('line', obj.radius, 90);
+            se = strel('line', obj.length, 90);
             adjustedThenOpenImage = imopen(adjustedImage, se);
         end
 
@@ -90,8 +89,7 @@ classdef ImagePreProcessor
             global binarizedGaussAdjustedThenOpenImage;
             global binarizedGaussOpenedImage;
             global erodedImage;
-            % se = strel('disk', floor(obj.radius), 0);
-            se = strel('line', obj.radius, 90);
+            se = strel('line', obj.length, 90);
             erodedImage = imerode(binarizedGaussOpenedImage, se);    % Perform erosion
             erodedImage = bwareaopen(erodedImage, 100);
         end
