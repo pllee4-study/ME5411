@@ -51,6 +51,8 @@ global binarizedGaussOpenedThenAdjustImage;
 
 global binarizedAdjustedImage;
 
+global erodedImage;
+
 ImagePreProcessingTuningPlot.plot("OpenedImage", openedImage);
 ImagePreProcessingTuningPlot.plot("OpenedThenAdjustImage", openedThenAdjustImage);
 ImagePreProcessingTuningPlot.plot("AdjustedThenOpenImage", adjustedThenOpenImage);
@@ -68,6 +70,8 @@ ImagePreProcessingTuningPlot.plot("BinarizedGaussAdjustedImage", binarizedGaussA
 ImagePreProcessingTuningPlot.plot("BinarizedGaussAdjustedThenOpenImage", binarizedGaussAdjustedThenOpenImage);
 ImagePreProcessingTuningPlot.plot("BinarizedGaussOpenedThenAdjustImage", binarizedGaussOpenedThenAdjustImage);
 ImagePreProcessingTuningPlot.plot("BinarizedAdjustedImage", binarizedAdjustedImage);
+
+ImagePreProcessingTuningPlot.plot("ErodedImage", erodedImage);
 
 function lineLengthUpdatedCallback(value)
     global preprocessor;
@@ -87,6 +91,8 @@ function lineLengthUpdatedCallback(value)
     global binarizedGaussAdjustedThenOpenImage;
     global binarizedGaussOpenedThenAdjustImage;
 
+    global erodedImage;
+
     % replot any processing related to open
     ImagePreProcessingTuningPlot.plot("OpenedImage", openedImage);
     ImagePreProcessingTuningPlot.plot("OpenedThenAdjustImage", openedThenAdjustImage);
@@ -101,6 +107,8 @@ function lineLengthUpdatedCallback(value)
     ImagePreProcessingTuningPlot.plot("BinarizedGaussOpenedImage", binarizedGaussOpenedImage);
     ImagePreProcessingTuningPlot.plot("BinarizedGaussAdjustedThenOpenImage", binarizedGaussAdjustedThenOpenImage);
     ImagePreProcessingTuningPlot.plot("BinarizedGaussOpenedThenAdjustImage", binarizedGaussOpenedThenAdjustImage);
+
+    ImagePreProcessingTuningPlot.plot("ErodedImage", erodedImage);
 end
 
 function sigmaUpdatedCallback(value)
@@ -117,6 +125,8 @@ function sigmaUpdatedCallback(value)
     global binarizedGaussAdjustedThenOpenImage;
     global binarizedGaussOpenedThenAdjustImage;
 
+    global erodedImage;
+
     % replot any processing related to gaussian filtering
     ImagePreProcessingTuningPlot.plot("GaussOpenedImage", gaussOpenedImage);
     ImagePreProcessingTuningPlot.plot("GaussAdjustedThenOpenImage", gaussAdjustedThenOpenImage);
@@ -127,6 +137,8 @@ function sigmaUpdatedCallback(value)
     ImagePreProcessingTuningPlot.plot("BinarizedGaussAdjustedImage", binarizedGaussAdjustedImage);
     ImagePreProcessingTuningPlot.plot("BinarizedGaussAdjustedThenOpenImage", binarizedGaussAdjustedThenOpenImage);
     ImagePreProcessingTuningPlot.plot("BinarizedGaussOpenedThenAdjustImage", binarizedGaussOpenedThenAdjustImage);
+
+    ImagePreProcessingTuningPlot.plot("ErodedImage", erodedImage);
 end
 
 function thresholdUpdatedCallback(value)
@@ -144,6 +156,7 @@ function thresholdUpdatedCallback(value)
     global binarizedGaussOpenedThenAdjustImage;
 
     global binarizedAdjustedImage;
+    global erodedImage;
 
     ImagePreProcessingTuningPlot.plot("BinarizedOpenedImage", binarizedOpenedImage);
     ImagePreProcessingTuningPlot.plot("BinarizedOpenedThenAdjustImage", binarizedOpenedThenAdjustImage);
@@ -154,4 +167,5 @@ function thresholdUpdatedCallback(value)
     ImagePreProcessingTuningPlot.plot("BinarizedGaussOpenedThenAdjustImage", binarizedGaussOpenedThenAdjustImage);
     ImagePreProcessingTuningPlot.plot("BinarizedAdjustedImage", binarizedAdjustedImage);
 
+    ImagePreProcessingTuningPlot.plot("ErodedImage", erodedImage);
 end
