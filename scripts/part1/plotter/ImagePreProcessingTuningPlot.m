@@ -35,6 +35,9 @@ classdef ImagePreProcessingTuningPlot
                     ImagePreProcessingTuningPlot.plotDetail(5, 4, 15, figures, name, true);
                 case "BinarizedGaussAdjustedImage"
                     ImagePreProcessingTuningPlot.plotDetail(5, 4, 16, figures, name, true);
+
+                case "ErodedImage"
+                    ImagePreProcessingTuningPlot.plotDetail(5, 4, 17, figures, name, true);
                 otherwise
             end 
         end
@@ -44,10 +47,51 @@ classdef ImagePreProcessingTuningPlot
                 cc = bwconncomp(figures, 4);
                 props = regionprops(cc, 'BoundingBox');
                 subplot(row, column, index), imshow(figures), title(name);
+                labelMatrix = double(labelmatrix(cc));
+                numCc = max(labelMatrix(:));  % Number of connected components
+                coloredLabels = label2rgb(labelMatrix, turbo(numCc), 'k', 'shuffle');
+                imshow(coloredLabels);
                 hold on;
+
+                % Initialize the min width with a value larger than any rectangle width
+                minWidth = Inf;
+
+                % Find the smallest rectangle width
+                for i = 1:numel(props)
+                    width = props(i).BoundingBox(3);
+                    if width < minWidth
+                        minWidth = width;
+                    end
+                end
+
+                % Perform additional split if the rectangle width is significantly larger than the min width
+                splitThreshold = 1.7;  % Threshold to determine if the width is significantly larger
+         
                 for i = 1:numel(props)
                     rectangle('Position', props(i).BoundingBox, 'EdgeColor', 'r', 'LineWidth', 2);
+
+                    % Check if the width is significantly larger than the minWidth
+                    width = props(i).BoundingBox(3);
+                    if width > splitThreshold * minWidth
+                        % Split the rectangle into two equal-width rectangles
+                        halfWidth = width / 2;
+                        x = props(i).BoundingBox(1);
+                        y = props(i).BoundingBox(2);
+                        height = props(i).BoundingBox(4);
+
+                        % Create two new rectangles
+                        rect1 = [x, y, halfWidth, height];
+                        rect2 = [x + halfWidth, y, halfWidth, height];
+                    
+                        coloredLabels(y : y + height, x : x + halfWidth, 1) = 19;
+
+                        % Draw the additional rectangles
+                        rectangle('Position', rect1, 'EdgeColor', 'g', 'LineWidth', 2);
+                        rectangle('Position', rect2, 'EdgeColor', 'b', 'LineWidth', 2);    
+                    end
                 end
+                % show the processed coloredLabels
+                imshow(coloredLabels);
             else
                 subplot(row, column, index), imshow(figures), title(name);
             end
