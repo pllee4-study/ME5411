@@ -75,16 +75,16 @@ classdef ImagePreProcessingTuningPlot
                     if width > splitThreshold * minWidth
                         % Split the rectangle into two equal-width rectangles
                         halfWidth = width / 2;
-                        x = props(i).BoundingBox(1);
-                        y = props(i).BoundingBox(2);
-                        height = props(i).BoundingBox(4);
+                        x = int32(props(i).BoundingBox(1));
+                        y = int32(props(i).BoundingBox(2));
+                        height = int32(props(i).BoundingBox(4));
 
                         % Create two new rectangles
                         rect1 = [x, y, halfWidth, height];
                         rect2 = [x + halfWidth, y, halfWidth, height];
-                    
-                        coloredLabels(y : y + height, x : x + halfWidth, 1) = 19;
-
+                        
+                        coloredLabels(y : y + height, x : x + halfWidth, 1) = 10;
+    
                         % Draw the additional rectangles
                         rectangle('Position', rect1, 'EdgeColor', 'g', 'LineWidth', 2);
                         rectangle('Position', rect2, 'EdgeColor', 'b', 'LineWidth', 2);    
