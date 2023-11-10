@@ -49,12 +49,13 @@ classdef ImagePreProcessingTuningPlot
             if showSegmentedCharacter
                 cc = bwconncomp(figures, 4);
                 props = regionprops(cc, 'BoundingBox');
-                subplot(row, column, index), imshow(figures), title(name);
                 labelMatrix = double(labelmatrix(cc));
                 numCc = max(labelMatrix(:));  % Number of connected components
-                coloredLabels = label2rgb(labelMatrix, turbo(numCc), 'k', 'shuffle');
-                imshow(coloredLabels);
-                hold on;
+                if numCc > 0
+                    coloredLabels = label2rgb(labelMatrix, turbo(numCc), 'k', 'shuffle');
+                    subplot(row, column, index), imshow(coloredLabels), title(name);
+                end
+
                 if ~extraProcessing
                     for i = 1:numel(props)
                         rectangle('Position', props(i).BoundingBox, 'EdgeColor', 'r', 'LineWidth', 2);
@@ -97,7 +98,7 @@ classdef ImagePreProcessingTuningPlot
                         end
                     end
                     % show the processed coloredLabels
-                    imshow(coloredLabels);
+                    subplot(row, column, index), imshow(coloredLabels), title(name);
                 end
             else
                 subplot(row, column, index), imshow(figures), title(name);
