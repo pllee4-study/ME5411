@@ -54,6 +54,8 @@ classdef ImagePreProcessingTuningPlot
                 if numCc > 0
                     coloredLabels = label2rgb(labelMatrix, turbo(numCc), 'k', 'shuffle');
                     subplot(row, column, index), imshow(coloredLabels), title(name);
+                else
+                    coloredLabels = label2rgb(labelMatrix);
                 end
 
                 if ~extraProcessing
