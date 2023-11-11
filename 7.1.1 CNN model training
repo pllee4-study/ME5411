@@ -2,9 +2,9 @@ clc
 clear
 
 % 通过手动指定路径
-trainDataPath = 'D:\b) Study\水硕\ME5411 robot vision and ai\assignment1\p_dataset_26 (1)\p_dataset_26\TRAIN';
-testDataPath = 'D:\b) Study\水硕\ME5411 robot vision and ai\assignment1\p_dataset_26 (1)\p_dataset_26\TEST';
-% taskDataPath = '完整的分类任务数据文件夹路径';
+trainDataPath = 'TRAINDATA IN RAR';
+testDataPath = 'TESTDATA IN RAR ';
+
 imsTrain = imageDatastore(trainDataPath, 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
 imdsTest= imageDatastore(testDataPath, 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
 
