@@ -1,5 +1,5 @@
 %SVM
-% path for data:  ../assets/p_dataset_26_v2
+% path for data:  ../assets/p_dataset_26
 
 
 % Load and process the data
@@ -8,7 +8,7 @@ labels = []; % Initialize labels
 folders = {'H', 'D', 'A', '8', '7', '4', '0'};
 
 for i = 1:length(folders)
-    folderPath = strcat('../assets/p_dataset_26_v2/', folders{i}, '/*.png');
+    folderPath = strcat('../assets/p_dataset_26/', folders{i}, '/*.png');
     images = dir(folderPath);
     fprintf('Processing folder %s\n', folders{i});
     for j = 1:length(images)
