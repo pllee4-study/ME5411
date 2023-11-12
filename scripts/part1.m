@@ -103,6 +103,9 @@ enhancedOutlineImage = enhancedDilatedImage - enhancedErodeImage;
 figure('Name', 'Final');
 subplot(4, 3, 1), imshow(img), title('Original Image');
 
+% from preProcessingTuning.m
+getFinalResultFromPreProcessingTuning(img, 4, 3, 2, 'Labelled Image');
+
 subplot(4, 3, 3), imshow(imcomplement(enhancedOutlineImage)), title('Enhanced Complement Outline Image');
 subplot(4, 3, 4), imshow(uint8(enhancedThreeByThreeImgAverage)), title('Enhanced Averaging Mask(3x3)');
 subplot(4, 3, 5), imshow(uint8(enhancedThreeByThreeImgRotate)), title('Enhanced Rotating Mask(3x3)');
@@ -112,8 +115,8 @@ subplot(4, 3, 8), imshow(uint8(enhancedFiveByFiveImgRotate)), title('Enchanced R
 subplot(4, 3, 9), imshow(enhancedErodeImage), title('Enhanced Eroded Image');
 subplot(4, 3, 12), imshow(enhancedOutlineImage), title('Enhanced Outline Image');
 
-subplot(4, 3, 10), imshow(enhancedSubImage), title('SubImage');
-subplot(4, 3, 11), imshow(enhancedBinarySubImage), title('Binary SubImage');
+subplot(4, 3, 10), imshow(enhancedSubImage), title('Enhanced SubImage');
+subplot(4, 3, 11), imshow(enhancedBinarySubImage), title('Enhanced Binary SubImage');
 
 enhancedSlider = uicontrol('style', 'slider', 'position', [sliderLeft, sliderBottom, sliderWidth, sliderHeight], 'callback', @(src, event) updateThreshold(src, enhancedGrayScaleSubImage));
 set(enhancedSlider, 'Min', 0, 'Max', 1, 'Value', 0.4169, 'SliderStep', [0.01 0.1], 'UserData', enhancedSubImage, 'Tag', 'ThresholdSlider');
@@ -129,4 +132,42 @@ function updateThreshold(sliderValue, grayScaleSubImage)
         error('Failed to convert the image to binary: %s', ME.message);
     end
     subplot(4, 3, 11), imshow(binarySubImage), title('Binary SubImage');
+end
+
+function getFinalResultFromPreProcessingTuning(image, row, column, index, name)
+    se = strel('line', 11, 90); % Create a line-shaped structuring element with angle of 90
+    openedImage = imopen(image, se);  % Perform opening operation
+    openedImageGrayScale = rgb2gray(openedImage);
+    gaussOpenedImage = imgaussfilt(openedImageGrayScale, 2);
+    binarizedGaussOpenedImage = imbinarize(gaussOpenedImage, 0.417143);
+    erodedImage = imerode(binarizedGaussOpenedImage, se);
+    erodedImage = bwareaopen(erodedImage, 100);
+    cc = bwconncomp(erodedImage, 4);
+    props = regionprops(cc, 'BoundingBox');
+    labelMatrix = double(labelmatrix(cc));
+    numCc = max(labelMatrix(:));  % Number of connected components
+    coloredLabels = label2rgb(labelMatrix, turbo(numCc), 'k', 'shuffle');
+    minWidth = Inf;
+
+    % Find the smallest rectangle width
+    for i = 1:numel(props)
+        width = props(i).BoundingBox(3);
+        if width < minWidth
+            minWidth = width;
+        end
+    end
+    splitThreshold = 1.7;  % Threshold to determine if the width is significantly larger
+    for i = 1:numel(props)
+        % Check if the width is significantly larger than the minWidth
+        width = props(i).BoundingBox(3);
+        if width > splitThreshold * minWidth
+            % Split the rectangle into two equal-width rectangles
+            halfWidth = width / 2;
+            x = int32(props(i).BoundingBox(1));
+            y = int32(props(i).BoundingBox(2));
+            height = int32(props(i).BoundingBox(4));  
+            coloredLabels(y : y + height, x : x + halfWidth, 1) = 10; 
+        end
+    end
+    subplot(row, column, index), imshow(coloredLabels), title(name);
 end
