@@ -8,13 +8,14 @@ addpath(fullfile(rootPath, 'scripts/part1'));
 img = imageLoaded;
 
 % Create a structuring element
-se = strel('disk', 6);  % Create a disk-shaped structuring element with radius 6 pixels
+se = strel('disk', 5);  % Create a disk-shaped structuring element with radius 5 pixels
 
 % Perform image filtering using the structuring element
 openedImage = imopen(img, se);  % Perform opening operation
 
 % Convert the image to grayscale
 imgGrayScale = rgb2gray(img);
+openedImgGrayScale = rgb2gray(openedImage);
 
 % Define the 3x3 and 5x5 averaging mask
 threeByThreeAverageMask = ones(3) / 9;
@@ -24,24 +25,31 @@ fiveByFiveAverageMask = ones(5) / 25;
 threeByThreeImgAverage = conv2(double(imgGrayScale), threeByThreeAverageMask, 'same');
 fiveByFiveImgAverage = conv2(double(imgGrayScale), fiveByFiveAverageMask, 'same');
 
+enhancedThreeByThreeImgAverage = conv2(double(openedImgGrayScale), threeByThreeAverageMask, 'same');
+enhancedFiveByFiveImgAverage = conv2(double(openedImgGrayScale), fiveByFiveAverageMask, 'same');
+
 % Define the 3x3 and 5x5 rotating mask
-% threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 200;
-% fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 1648;
-threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 50;
-fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 412;
+threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 200;
+fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 1648;
+
+enhancedThreeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 50;
+enhancedFiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 412;
 
 % Apply the rotating mask using the conv2 function
 threeByThreeImgRotate = conv2(double(imgGrayScale), threeByThreeRotMask, 'same');
 fiveByFiveImgRotate = conv2(double(imgGrayScale), fiveByFiveRotMask, 'same');
 
+enhancedThreeByThreeImgRotate = conv2(double(openedImgGrayScale), enhancedThreeByThreeRotMask, 'same');
+enhancedFiveByFiveImgRotate = conv2(double(openedImgGrayScale), enhancedFiveByFiveRotMask, 'same');
+
 % Perform image filtering using the structuring element
-dilatedImage = imdilate(uint8(threeByThreeImgAverage), se);  % Perform dilation
-erodedImage = imerode(uint8(threeByThreeImgAverage), se);    % Perform erosion
-closedImage = imclose(uint8(threeByThreeImgAverage), se);  % Perform closing operation
+dilatedImage = imdilate(img, se);  % Perform dilation
+erodedImage = imerode(img, se);    % Perform erosion
+closedImage = imclose(img, se);  % Perform closing operation
 outlineImage = dilatedImage - erodedImage;
 
 % Display the original image and the processed images
-figure('Name', 'ME5411 Group 11');
+figure('Name', 'Raw');
 subplot(4, 3, 1), imshow(img), title('Original Image');
 subplot(4, 3, 2), imshow(openedImage), title('Opened Image');
 subplot(4, 3, 3), imshow(closedImage), title('Closed Image');
@@ -53,14 +61,20 @@ subplot(4, 3, 8), imshow(uint8(fiveByFiveImgRotate)), title('Rotating Mask(5x5)'
 subplot(4, 3, 9), imshow(erodedImage), title('Eroded Image');
 subplot(4, 3, 12), imshow(outlineImage), title('Outline Image');
 
-[rows, cols, ~] = size(uint8(threeByThreeImgAverage));
+[rows, cols, ~] = size(uint8(img));
 startingRow = (rows / 2) + 1;
 subImage = img(int32(startingRow) : int32(rows), :, :);
 
 grayScaleSubImage = rgb2gray(subImage);
 
 % Convert the grayscale image to binary
-binarySubImage = imbinarize(grayScaleSubImage, 0.3852);
+binarySubImage = imbinarize(grayScaleSubImage, 0.4617);
+
+[enhancedRows, enhancedCols, ~] = size(uint8(openedImage));
+enhancedSubImage = openedImage(int32((enhancedRows / 2) + 1) : int32(enhancedRows), :, :);
+
+enhancedGrayScaleSubImage = rgb2gray(enhancedSubImage);
+enhancedBinarySubImage = imbinarize(enhancedGrayScaleSubImage, 0.4169);
 
 subplot(4, 3, 10), imshow(subImage), title('SubImage');
 subplot(4, 3, 11), imshow(binarySubImage), title('Binary SubImage');
@@ -75,9 +89,36 @@ sliderWidth = 0.8 * figWidth;  % 80% of the figure width
 sliderHeight = 0.05 * figHeight;  % 5% of the figure height
 
 slider = uicontrol('style', 'slider', 'position', [sliderLeft, sliderBottom, sliderWidth, sliderHeight], 'callback', @(src, event) updateThreshold(src, grayScaleSubImage));
-set(slider, 'Min', 0, 'Max', 1, 'Value', 0.5, 'SliderStep', [0.01 0.1], 'UserData', binarySubImage, 'Tag', 'ThresholdSlider');
+set(slider, 'Min', 0, 'Max', 1, 'Value', 0.4617, 'SliderStep', [0.01 0.1], 'UserData', binarySubImage, 'Tag', 'ThresholdSlider');
 
 addlistener(slider, 'ContinuousValueChange', @(src, event) updateThreshold(src, grayScaleSubImage));
+
+% Special handling for better outline performance
+gaussOpenedImage = imgaussfilt(rgb2gray(openedImage), 2);
+binarizedGaussOpenedImage = imbinarize(gaussOpenedImage, 0.428571);
+enhancedDilatedImage = imdilate(binarizedGaussOpenedImage, se);
+enhancedErodeImage = imerode(binarizedGaussOpenedImage, se);
+enhancedOutlineImage = enhancedDilatedImage - enhancedErodeImage;
+
+figure('Name', 'Final');
+subplot(4, 3, 1), imshow(img), title('Original Image');
+
+subplot(4, 3, 3), imshow(imcomplement(enhancedOutlineImage)), title('Enhanced Complement Outline Image');
+subplot(4, 3, 4), imshow(uint8(enhancedThreeByThreeImgAverage)), title('Enhanced Averaging Mask(3x3)');
+subplot(4, 3, 5), imshow(uint8(enhancedThreeByThreeImgRotate)), title('Enhanced Rotating Mask(3x3)');
+subplot(4, 3, 6), imshow(enhancedDilatedImage), title('Enhanced Dilated Image');
+subplot(4, 3, 7), imshow(uint8(enhancedFiveByFiveImgAverage)), title('Enchanced Averaging Mask(5x5)');
+subplot(4, 3, 8), imshow(uint8(enhancedFiveByFiveImgRotate)), title('Enchanced Rotating Mask(5x5)');
+subplot(4, 3, 9), imshow(enhancedErodeImage), title('Enhanced Eroded Image');
+subplot(4, 3, 12), imshow(enhancedOutlineImage), title('Enhanced Outline Image');
+
+subplot(4, 3, 10), imshow(enhancedSubImage), title('SubImage');
+subplot(4, 3, 11), imshow(enhancedBinarySubImage), title('Binary SubImage');
+
+enhancedSlider = uicontrol('style', 'slider', 'position', [sliderLeft, sliderBottom, sliderWidth, sliderHeight], 'callback', @(src, event) updateThreshold(src, enhancedGrayScaleSubImage));
+set(enhancedSlider, 'Min', 0, 'Max', 1, 'Value', 0.4169, 'SliderStep', [0.01 0.1], 'UserData', enhancedSubImage, 'Tag', 'ThresholdSlider');
+
+addlistener(enhancedSlider, 'ContinuousValueChange', @(src, event) updateThreshold(src, enhancedGrayScaleSubImage));
 
 function updateThreshold(sliderValue, grayScaleSubImage)
     threshold = get(sliderValue, 'Value');
