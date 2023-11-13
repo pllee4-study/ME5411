@@ -4,21 +4,21 @@ on:
   [push, pull_request]
 
 jobs:
-  octave_build:
-    runs-on: ubuntu-latest
+  # octave_build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Set up Octave
-        run: sudo apt-get update && sudo apt install octave liboctave-dev build-essential
+  #     - name: Set up Octave
+  #       run: sudo apt-get update && sudo apt install octave liboctave-dev build-essential
 
-      - name: Install Octave package
-        run: octave --eval "pkg install -forge image"
+  #     - name: Install Octave package
+  #       run: octave --eval "pkg install -forge image"
 
-      - name: Run Octave script for Part1
-        run: cd scripts && octave --eval "pkg load image; run('part1.m')"
+  #     - name: Run Octave script for Part1
+  #       run: cd scripts && octave --eval "pkg load image; run('part1.m')"
 
   matlab_build:
     # if: github.event.repository.private == 'false'
