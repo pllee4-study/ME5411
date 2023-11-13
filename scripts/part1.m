@@ -29,18 +29,15 @@ enhancedThreeByThreeImgAverage = conv2(double(openedImgGrayScale), threeByThreeA
 enhancedFiveByFiveImgAverage = conv2(double(openedImgGrayScale), fiveByFiveAverageMask, 'same');
 
 % Define the 3x3 and 5x5 rotating mask
-threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 200;
-fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 1648;
-
-enhancedThreeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 50;
-enhancedFiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 412;
+threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 31;
+fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 167;
 
 % Apply the rotating mask using the conv2 function
 threeByThreeImgRotate = conv2(double(imgGrayScale), threeByThreeRotMask, 'same');
 fiveByFiveImgRotate = conv2(double(imgGrayScale), fiveByFiveRotMask, 'same');
 
-enhancedThreeByThreeImgRotate = conv2(double(openedImgGrayScale), enhancedThreeByThreeRotMask, 'same');
-enhancedFiveByFiveImgRotate = conv2(double(openedImgGrayScale), enhancedFiveByFiveRotMask, 'same');
+enhancedThreeByThreeImgRotate = conv2(double(openedImgGrayScale), threeByThreeRotMask, 'same');
+enhancedFiveByFiveImgRotate = conv2(double(openedImgGrayScale), fiveByFiveRotMask, 'same');
 
 % Perform image filtering using the structuring element
 dilatedImage = imdilate(img, se);  % Perform dilation
