@@ -7,8 +7,9 @@ function [svmModel, dataTest, labelsTest, dataTestPaths, folders] = trainSVMMode
     folders = {'H', 'D', 'A', '8', '7', '4', '0'};
 
     % Load and process data
+    scriptPath = fileparts(mfilename('fullpath'));
     for i = 1:length(folders)
-        folderPath = strcat('../assets/p_dataset_26/', folders{i}, '/*.png');
+        folderPath = strcat(fullfile(scriptPath, '../assets/p_dataset_26/'), folders{i}, '/*.png');
         images = dir(folderPath);
         fprintf('Processing folder %s\n', folders{i});
         for j = 1:length(images)
