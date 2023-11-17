@@ -2,11 +2,24 @@ clc
 clear
 
 % 通过手动指定路径
-trainDataPath = 'TRAINDATA IN RAR';
-testDataPath = 'TESTDATA IN RAR ';
-
+trainDataPath = 'D:\b) Study\水硕\ME5411 robot vision and ai\assignment1\p_dataset_26 (1)\p_dataset_26\TRAIN';
+testDataPath = 'D:\b) Study\水硕\ME5411 robot vision and ai\assignment1\p_dataset_26 (1)\p_dataset_26\TEST';
+% taskDataPath = '完整的分类任务数据文件夹路径';
 imsTrain = imageDatastore(trainDataPath, 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
 imdsTest= imageDatastore(testDataPath, 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
+%储存标签
+trainLabels = imsTrain.Labels;
+testLabels = imdsTest.Labels;
+
+%Directory for saving the output neural network
+name_nn = "CNN_1";
+nn_directory = 'saved_NNs';
+nn_fullpath = strcat(nn_directory, '/',name_nn);
+
+%Check if the directory for saving the output neural network exists.
+if ~exist(nn_directory, 'dir')
+   mkdir(nn_directory)
+end
 
 
 img=readimage(imsTrain,1);
@@ -57,8 +70,8 @@ layers = [
     ];
 
 options = trainingOptions("adam",...
-   "InitialLearnRate",0.01,...
-   "MaxEpochs",9,...
+   "InitialLearnRate",0.001,...
+   "MaxEpochs",20,...
    "Shuffle","every-epoch",...
    "ValidationData",imdsTest, ...
    "validationfrequency",20,...
@@ -69,15 +82,21 @@ options = trainingOptions("adam",...
 
    net=trainNetwork(imsTrain,layers,options);
 
+
+
+% 保存标签
+save('labels.mat', 'trainLabels', 'testLabels');
+
    YPred=classify(net,imdsTest);
    YTest=imdsTest.Labels;
-
    accuracy = sum(YPred == YTest)/numel(YTest)
-
    confmat=confusionmat(YTest,YPred);
 %    MhelperDisplayConfusionMatrix(confmat);
    plotconfusion(YTest,YPred);
 
+
+%% Save the neural net in disk for later use.
+save(nn_fullpath,'net')
    %task predict
 %    taskpath=fullfile('D/')
 %    imsTask=imageDatastore(taskpath,'IncludeSubfolders',true,'LabelSource','foldernames');
