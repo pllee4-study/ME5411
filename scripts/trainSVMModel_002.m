@@ -49,7 +49,7 @@ function [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, data
     labelsTest = labels(idx);
     
     % Further split test data into validation and test sets
-    cvTest = cvpartition(numel(dataTest), 'HoldOut', 0.5);
+    cvTest = cvpartition(numel(dataTest), 'HoldOut', 0.625);
     idxTest = cvTest.test;
     dataValidation = dataTest(~idxTest);
     labelsValidation = labelsTest(~idxTest);
