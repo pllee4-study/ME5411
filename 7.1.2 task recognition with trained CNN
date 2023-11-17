@@ -1,81 +1,30 @@
-img = imread('line2ofimage.jpg'); % 替换为要分类的图像的文件路径
-x1 = 1;  % 左上角的x坐标
-y1 = 1;  % 左上角的y坐标
-x2 = 90;  % 右下角的x坐标
-y2 = 188;  % 右下角的y坐标
-subimage1 = img(y1:y2, x1:x2);imwrite(subimage1, ['subimage1.jpg']);
-% imshow(subimage1)
-x1 = 95;
-y1 = 1;
-x2 = 186;
-y2 = 188;
-subimage2 = img(y1:y2, x1:x2);imwrite(subimage2, ['subimage2.jpg']);
-% imshow(subimage2)
-x1 = 186;
-y1 = 1;
-x2 = 270;
-y2 = 188;
-subimage3 = img(y1:y2, x1:x2);imwrite(subimage3, ['subimage3.jpg']);
-% imshow(subimage3)
-x1 = 270;
-y1 = 1;
-x2 = 365;
-y2 = 188;
-subimage4 = img(y1:y2, x1:x2);imwrite(subimage4, ['subimage4.jpg']);
-% imshow(subimage4)
-x1 = 365;
-y1 = 1;
-x2 = 450;
-y2 = 188;
-subimage5 = img(y1:y2, x1:x2);imwrite(subimage5, ['subimage5.jpg']);
-% imshow(subimage5)
-x1 = 451;
-y1 = 1;
-x2 = 540;
-y2 = 188;
-subimage6 = img(y1:y2, x1:x2);imwrite(subimage6, ['subimage6.jpg']);
-% imshow(subimage6)
-x1 = 539;
-y1 = 1;
-x2 = 630;
-y2 = 188;
-subimage7 = img(y1:y2, x1:x2);imwrite(subimage7, ['subimage7.jpg']);
-% imshow(subimage7)
-x1 = 625;
-y1 = 1;
-x2 = 715;
-y2 = 188;
-subimage8 = img(y1:y2, x1:x2);imwrite(subimage8, ['subimage8.jpg']);
-% imshow(subimage8)
-x1 = 715;
-y1 = 1;
-x2 = 800;
-y2 = 188;
-subimage9 = img(y1:y2, x1:x2);imwrite(subimage9, ['subimage9.jpg']);
-% imshow(subimage9)
-x1 = 800;
-y1 = 1;
-x2 = 890;
-y2 = 188;
-subimage10 = img(y1:y2, x1:x2);imwrite(subimage10, ['subimage10.jpg']);
-% imshow(subimage10)
+clc
+
+%% 设置神经网络目录并加载模型
+directory_NNs = 'saved_NNs';
+name_nn = 'CNN_1';
+nn_fullpath = fullfile(directory_NNs, name_nn);
+load(nn_fullpath, 'net');
+%% 
+
+task_data = 'characters_white'
+imagefiles = dir(fullfile(task_data, '*.png'))
+nfiles = length(imagefiles);
+% 读取原始图像
+for i = 1:nfiles
+    current_filename = fullfile(task_data, imagefiles(i).name);
+    current_image = imread(current_filename);
+% current_image = imread('0alsotoo.png');
 
 
 
-i=1
-while i<=10
-   
-x = imread(['subimage', num2str(i), '.jpg']);
-a = imresize(x, [128, 128]); % 调整图像大小
-label = classify(net, a);
-% disp(['模型分类结果：', char(label)]);
-disp(['subimage', num2str(i), '.jpg', num2str(i), ' 的模型分类结果：', char(label)]);
-i=i+1;
+%  grayImage = im2gray(current_image);
+%  imshow(grayImage);
+ 
+% imshow(inverted_image);
+grayImage = im2gray(current_image);
+% imshow(grayImage);
+% inverted_image = imcomplement(current_image);
+[label, scores] = classify(net, grayImage);
+fprintf('Element %d: Predicted label: %s, Score: %f\n', i, char(label), max(scores));
 end
-
-% x = imread(['subimage6.jpg']);
-% a = imresize(x, [128, 128]); % 调整图像大小
-% label = classify(net, a);
-% disp(['模型分类结果：', char(label)]);
-% % disp(['子图像 ', num2str(i), ' 的模型分类结果：', char(label)]);
-
