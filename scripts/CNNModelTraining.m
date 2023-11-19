@@ -1,28 +1,28 @@
-clc
-clear
+scriptPath = fileparts(mfilename('fullpath'));
+datasetPath = fullfile(scriptPath, '../assets/CNNDataset');
 
 % 通过手动指定路径
-trainDataPath = 'D:\b) Study\水硕\ME5411 robot vision and ai\assignment1\p_dataset_26 (1)\p_dataset_26\TRAIN';
-testDataPath = 'D:\b) Study\水硕\ME5411 robot vision and ai\assignment1\p_dataset_26 (1)\p_dataset_26\TEST';
-% taskDataPath = '完整的分类任务数据文件夹路径';
+trainDataPath = fullfile(datasetPath, 'TRAIN');
+testDataPath = fullfile(datasetPath, 'TEST');
+
 imsTrain = imageDatastore(trainDataPath, 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
 imdsTest= imageDatastore(testDataPath, 'IncludeSubfolders', true, 'LabelSource', 'foldernames');
 %储存标签
 trainLabels = imsTrain.Labels;
 testLabels = imdsTest.Labels;
 
-%Directory for saving the output neural network
-name_nn = "CNN_1";
-nn_directory = 'saved_NNs';
-nn_fullpath = strcat(nn_directory, '/',name_nn);
+% Directory for saving the output neural network
+modelPath = fullfile(scriptPath, '../model');
+nnDir = fullfile(modelPath, 'CNN');
+labelPath = fullfile(nnDir, 'labels.mat');
+nnFullPath = fullfile(nnDir, 'CNN');
 
 %Check if the directory for saving the output neural network exists.
-if ~exist(nn_directory, 'dir')
-   mkdir(nn_directory)
+if ~exist(nnDir, 'dir')
+   mkdir(nnDir)
 end
 
-
-img=readimage(imsTrain,1);
+img = readimage(imsTrain,1);
 size(img);
 
 layers = [
@@ -80,34 +80,18 @@ options = trainingOptions("adam",...
    "ExecutionEnvironment","auto",...
    "Plots","training-progress");
 
-   net=trainNetwork(imsTrain,layers,options);
-
-
+net=trainNetwork(imsTrain,layers,options);
 
 % 保存标签
-save('labels.mat', 'trainLabels', 'testLabels');
+save(labelPath, 'trainLabels', 'testLabels');
 
-   YPred=classify(net,imdsTest);
-   YTest=imdsTest.Labels;
-   accuracy = sum(YPred == YTest)/numel(YTest)
-   confmat=confusionmat(YTest,YPred);
-%    MhelperDisplayConfusionMatrix(confmat);
-   plotconfusion(YTest,YPred);
+YPred=classify(net,imdsTest);
+YTest=imdsTest.Labels;
+accuracy = sum(YPred == YTest)/numel(YTest)
+confmat=confusionmat(YTest,YPred);
+plotconfusion(YTest,YPred);
 
 
 %% Save the neural net in disk for later use.
-save(nn_fullpath,'net')
-   %task predict
-%    taskpath=fullfile('D/')
-%    imsTask=imageDatastore(taskpath,'IncludeSubfolders',true,'LabelSource','foldernames');
-% 
-%    YTaskpredict=classify(net,imsTask);
-%    YTrue=imsTask.Labels;
-% 
-%    figure;
-
-
-
-
-
+save(nnFullPath, 'net')
 lgraph = layerGraph(layers);
