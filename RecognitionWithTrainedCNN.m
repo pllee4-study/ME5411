@@ -16,8 +16,6 @@ for i = 1:nfiles
     current_image = imread(current_filename);
 % current_image = imread('0alsotoo.png');
 
-
-
 %  grayImage = im2gray(current_image);
 %  imshow(grayImage);
  
