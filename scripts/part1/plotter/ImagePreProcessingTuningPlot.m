@@ -93,11 +93,15 @@ classdef ImagePreProcessingTuningPlot
                             rect2 = [x + halfWidth, y, halfWidth, height];
                             
                             coloredLabels(y : y + height, x : x + halfWidth, 1) = 10;
-        
+                            % For writing of labelled image
+                            % imwrite(imcomplement(figures(y : y + height, x : x + halfWidth, 1)), sprintf("character%d.png", i + 100));
+                            % imwrite(imcomplement(figures(y : y + height, x + halfWidth : x + width, 1)), sprintf("character%d.png", i + 200));
                             % Draw the additional rectangles
                             rectangle('Position', rect1, 'EdgeColor', 'g', 'LineWidth', 2);
                             rectangle('Position', rect2, 'EdgeColor', 'b', 'LineWidth', 2);    
                         end
+                        % For writing of labelled image
+                        % imwrite(imcomplement(imcrop(figures, props(i).BoundingBox())), sprintf("character%d.png", i));
                     end
                     % show the processed coloredLabels
                     subplot(row, column, index), imshow(coloredLabels), title(name);
