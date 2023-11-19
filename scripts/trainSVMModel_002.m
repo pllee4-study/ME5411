@@ -5,7 +5,8 @@ function [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, data
     folders = {'H', 'D', 'A', '8', '7', '4', '0'};
 
     % Calculate total number of images
-    totalImages = sum(arrayfun(@(f) numel(dir(fullfile('../assets/p_dataset_26/', char(f), '/*.png'))), folders));
+    scriptPath = fileparts(mfilename('fullpath'));
+    totalImages = sum(arrayfun(@(f) numel(dir(fullfile(scriptPath, '../assets/p_dataset_26/', char(f), '/*.png'))), folders));
 
     data = cell(1, totalImages);
     labels = cell(1, totalImages);
