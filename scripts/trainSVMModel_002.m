@@ -16,7 +16,7 @@ function [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, data
 
     % Load and process data
     for i = 1:length(folders)
-        folderPath = strcat('../assets/p_dataset_26/', folders{i}, '/*.png');
+        folderPath = strcat(fullfile(scriptPath, '../assets/p_dataset_26/'), folders{i}, '/*.png');
         images = dir(folderPath);
         fprintf('Processing folder %s\n', folders{i});
         for j = 1:length(images)
