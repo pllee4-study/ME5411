@@ -34,7 +34,7 @@ for i = 1:length(folders)
 
         % 1. Negative Transformation
         negativeImg = imcomplement(originalImg);
-        imwrite(negativeImg, fullfile(labelOutputFolder, ['negative_', images(j).name]));
+        %imwrite(negativeImg, fullfile(labelOutputFolder, ['negative_', images(j).name]));
     
         % 2. Remove/Add Padding and Resize        
         % Automatically crop the image & Resize back to original 
@@ -52,7 +52,7 @@ for i = 1:length(folders)
         % Resize the padded image back to original size
         resizedBackImg = imresize(paddedImg, [rows, cols]);
         % Save the final image
-        imwrite(resizedBackImg, fullfile(labelOutputFolder, ['morePadding_', images(j).name]));
+        % imwrite(resizedBackImg, fullfile(labelOutputFolder, ['morePadding_', images(j).name]));
 
     
         % % 3. Stretching
@@ -87,11 +87,11 @@ for i = 1:length(folders)
         % 4. Adding Noise
         % Gaussian Noise
         gaussianNoiseImg = imnoise(originalImg, 'gaussian', 0, 0.2);
-        imwrite(gaussianNoiseImg, fullfile(labelOutputFolder, ['gaussian_noise_', images(j).name]));
+        % imwrite(gaussianNoiseImg, fullfile(labelOutputFolder, ['gaussian_noise_', images(j).name]));
     
         % Salt and Pepper Noise
         spNoiseImg = imnoise(originalImg, 'salt & pepper', 0.4);
-        imwrite(spNoiseImg, fullfile(labelOutputFolder, ['sp_noise_', images(j).name]));
+        % imwrite(spNoiseImg, fullfile(labelOutputFolder, ['sp_noise_', images(j).name]));
     
         % Combinations by applying multiple transformations sequentially.
         % Negative transformation followed by adding Gaussian noise
@@ -100,9 +100,9 @@ for i = 1:length(folders)
         imwrite(neg_crop, fullfile(labelOutputFolder, ['crop_neg_', images(j).name]));
 
         combinedImg = imnoise(neg_crop, 'gaussian',0, 0.2);
-        imwrite(combinedImg, fullfile(labelOutputFolder, ['comb_crop_neg_gau_', images(j).name]));
+        % imwrite(combinedImg, fullfile(labelOutputFolder, ['comb_crop_neg_gau_', images(j).name]));
 
         combinedImg2 = imnoise(neg_crop, 'salt & pepper',0.4);
-        imwrite(combinedImg, fullfile(labelOutputFolder, ['comb_crop_neg_sp_', images(j).name]));
+        % imwrite(combinedImg, fullfile(labelOutputFolder, ['comb_crop_neg_sp_', images(j).name]));
     end
 end
