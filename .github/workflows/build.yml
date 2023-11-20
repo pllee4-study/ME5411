@@ -40,12 +40,12 @@ jobs:
         with:
           command: addpath("scripts"), part1
 
+      - name: Run command for SVM
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath("scripts"), Run_SVM
+
       - name: Run command for trainSVMModel
         uses: matlab-actions/run-command@v1
         with:
-          command: addpath("scripts"), trainSVMModel_002
-
-      # - name: Run command for SVM
-      #   uses: matlab-actions/run-command@v1
-      #   with:
-      #     command: addpath("scripts"), Run_SVM_002
+          command: addpath("scripts"), trainSVMModel_003
