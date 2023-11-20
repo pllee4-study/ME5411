@@ -1,4 +1,4 @@
-function [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, dataTestPaths, folders] = trainSVMModel_002()
+function [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, dataTestPaths, folders] = trainSVMModel_003()
 
 
     % Initialize arrays
@@ -42,28 +42,31 @@ function [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, data
     end
 
     % Split the data
-    cv = cvpartition(numel(data), 'HoldOut', 0.40);
+    cv = cvpartition(numel(data), 'HoldOut', 0.25);
     idx = cv.test;
     dataTrain = data(~idx);
     labelsTrain = labels(~idx);
     dataTest = data(idx);
     labelsTest = labels(idx);
     
-    % Further split test data into validation and test sets
-    cvTest = cvpartition(numel(dataTest), 'HoldOut', 0.625);
-    idxTest = cvTest.test;
-    dataValidation = dataTest(~idxTest);
-    labelsValidation = labelsTest(~idxTest);
-    dataTest = dataTest(idxTest);
-    labelsTest = labelsTest(idxTest);
+
+    dataValidation = {};
+    labelsValidation = {};
+    % % Further split test data into 0% validation and 10test sets
+    % cvTest = cvpartition(numel(dataTest), 'HoldOut', 0);
+    % idxTest = cvTest.test;
+    % dataValidation = dataTest(~idxTest);
+    % labelsValidation = labelsTest(~idxTest);
+    % dataTest = dataTest(idxTest);
+    % labelsTest = labelsTest(idxTest);
     
     % Now populate dataTestPaths with only the test image paths
     dataTestPaths = allPaths(idx); %
-    dataTestPaths = dataTestPaths(idxTest);
+    %dataTestPaths = dataTestPaths(idxTest);
 
     % Convert from cell array to numeric array
-    dataValidation = cell2mat(dataValidation');
-    labelsValidation = cell2mat(labelsValidation)';
+    % dataValidation = cell2mat(dataValidation');
+    % labelsValidation = cell2mat(labelsValidation)';
 
     dataTest = cell2mat(dataTest');
     labelsTest = cell2mat(labelsTest)';

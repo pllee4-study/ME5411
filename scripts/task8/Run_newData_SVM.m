@@ -1,9 +1,8 @@
 % Main Script
 
 % Find the most recent model file
-modelPath = fullfile(fileparts(mfilename('fullpath')), '../model');
-files = dir(fullfile(modelPath, '/SVMModel*.mat'));
-model = @trainSVMModel_002;
+files = dir('SVMModel*.mat');
+training_model = @trainSVMModel_004;
 if ~isempty(files)
     % Sort files by date and get the latest one
     [~, idx] = max([files.datenum]);
@@ -13,33 +12,31 @@ if ~isempty(files)
     choice = input('Do you want to use the latest model? Y/N [Y]: ', 's');
     if isempty(choice) || lower(choice) == 'y'
         fprintf('Using the latest model: %s\n', latestModelFile);
-        load(fullfile(modelPath, latestModelFile), 'svmModel','bestAccuracy', 'dataTest', 'labelsTest', 'dataTestPaths', 'folders');
+        load(latestModelFile, 'svmModel', 'dataTest', 'labelsTest', 'dataTestPaths', 'folders');
     else
         % Train many models and get the best one based on crossvalidation accuracy
-        [svmModel, bestAccuracy, dataTest, labelsTest, dataTestPaths, folders] = trainAndEvaluateModels(model, 3);
+        [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, dataTestPaths, folders] = training_model();
 
         % Save the best model
-        newModelFile = sprintf('%s/SVMModel_%s.mat', modelPath, datestr(now, 'yyyy-mm-dd_HH-MM-SS'));
-        save(newModelFile, 'svmModel','bestAccuracy', 'dataTest', 'labelsTest', 'dataTestPaths', 'folders');
+        newModelFile = sprintf('SVMModel_%s.mat', datestr(now, 'yyyy-mm-dd_HH-MM-SS'));
+        save(newModelFile, 'svmModel', 'dataTest', 'labelsTest', 'dataTestPaths', 'folders');
         fprintf('Best model saved as: %s\n', newModelFile);
     end
 else
     % No models found, train a new one
     % Train many models and get the best one based on crossvalidation accuracy
-    [svmModel, bestAccuracy, dataTest, labelsTest, dataTestPaths, folders] = trainAndEvaluateModels(model, 3);
+    [svmModel, dataValidation, labelsValidation, dataTest, labelsTest, dataTestPaths, folders] = training_model();
 
     % Save the best model
-    newModelFile = sprintf('%s/SVMModel_%s.mat', modelPath, datestr(now, 'yyyy-mm-dd_HH-MM-SS'));
-    save(newModelFile, 'svmModel','bestAccuracy', 'dataTest', 'labelsTest', 'dataTestPaths', 'folders');
+    newModelFile = sprintf('SVMModel_%s.mat', datestr(now, 'yyyy-mm-dd_HH-MM-SS'));
+    save(newModelFile, 'svmModel', 'dataTest', 'labelsTest', 'dataTestPaths', 'folders');
     fprintf('Best model saved as: %s\n', newModelFile);
 
 end
 
 
 % Test the model
-if isempty(svmModel)
-    svmModel=bestModel;
-end
+
 predictedLabels = predict(svmModel, dataTest);
 disp(length(predictedLabels));
 disp(size(dataTest));
@@ -93,4 +90,4 @@ for i = 1:numSamples
     end
 end
 
-
+predictedLabels = predict(svmModel, dataTest);
