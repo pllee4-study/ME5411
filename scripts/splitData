@@ -1,0 +1,32 @@
+% Parameters
+dataDir = 'path_to_your_data'; % Path to the directory containing your data
+trainDir = 'path_to_training_data'; % Path to the directory for training data
+testDir = 'path_to_test_data'; % Path to the directory for test data
+testRatio = 0.2; % Proportion of data to be used as test data
+
+% Read data
+files = dir(fullfile(dataDir, '*')); % Replace '*' with '*.jpg' for JPEG files, for example
+files = files(~[files.isdir]); % Remove directories
+
+% Shuffle and split data
+numFiles = numel(files);
+idx = randperm(numFiles);
+numTestFiles = round(testRatio * numFiles);
+testIdx = idx(1:numTestFiles);
+trainIdx = idx(numTestFiles+1:end);
+
+% Create directories if they don't exist
+if ~exist(trainDir, 'dir')
+    mkdir(trainDir);
+end
+if ~exist(testDir, 'dir')
+    mkdir(testDir);
+end
+
+% Copy files to respective directories
+for i = trainIdx
+    copyfile(fullfile(dataDir, files(i).name), fullfile(trainDir, files(i).name));
+end
+for i = testIdx
+    copyfile(fullfile(dataDir, files(i).name), fullfile(testDir, files(i).name));
+end
