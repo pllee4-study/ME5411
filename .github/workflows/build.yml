@@ -40,12 +40,22 @@ jobs:
         with:
           command: addpath("scripts"), part1
 
-      - name: Run command for SVM
+      - name: Run command for Part 2 SVM
         uses: matlab-actions/run-command@v1
         with:
           command: addpath("scripts"), Run_SVM
 
-      - name: Run command for trainSVMModel
+      - name: Run command for Part 2 SVM training
         uses: matlab-actions/run-command@v1
         with:
           command: addpath("scripts"), trainSVMModel_003
+
+      - name: Run command for Part2 CNN training
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath("scripts"), CNNModelTraining
+
+      - name: Run command for Part2 CNN recognition
+        uses: matlab-actions/run-command@v1
+        with:
+          command: addpath("scripts"), RecognitionWithTrainedCNN
