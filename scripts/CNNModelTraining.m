@@ -1,5 +1,7 @@
 scriptPath = fileparts(mfilename('fullpath'));
-datasetPath = fullfile(scriptPath, '../assets/CNNDataset');
+% datasetPath = fullfile(scriptPath, '../assets/CNNDataset');
+% Better performance for task 8
+datasetPath = fullfile(scriptPath, '../assets/CNNDataset/task8');
 
 % 通过手动指定路径
 trainDataPath = fullfile(datasetPath, 'TRAIN');
