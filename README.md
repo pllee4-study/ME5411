@@ -25,7 +25,7 @@ $ pkg load image
 ## Result
 
 ### Part1
-![Part1Final](https://github.com/pllee4/devel-record/assets/42335542/cfa97d16-68f6-424e-898f-b594fdfb4cf0)
+![Part1Final](https://github.com/pllee4/devel-record/assets/42335542/a5a3ed78-2e83-4d9b-b81e-a6e3a09f8d1e)
 
 ### TuningTools
 ![PreProcessingTuningTools](https://github.com/pllee4/devel-record/assets/42335542/ffab9e3e-d10e-4b25-95a9-df3a62c39ab6)
