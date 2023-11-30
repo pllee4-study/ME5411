@@ -1,4 +1,4 @@
-classdef ImagePreProcessor
+classdef ImagePreProcessor < handle
     properties
         image
 
@@ -7,20 +7,45 @@ classdef ImagePreProcessor
         sigma
 
         threshold
+
+        % input
+        openedImage;
+
+        openedThenAdjustImage;
+        adjustedThenOpenImage;
+
+        gaussOpenedImage;
+        gaussAdjustedImage;
+        gaussAdjustedThenOpenImage;
+        gaussOpenedThenAdjustImage;
+
+        adjustedImage;
+
+        % binarized output
+        binarizedOpenedImage;
+
+        binarizedOpenedThenAdjustImage;
+        binarizedAdjustedThenOpenImage;
+
+        binarizedGaussOpenedImage;
+        binarizedGaussAdjustedImage;
+        binarizedGaussAdjustedThenOpenImage;
+        binarizedGaussOpenedThenAdjustImage;
+
+        binarizedAdjustedImage;
+
+        erodedImage;
     end
 
-    methods
+    methods (Access = public)
         function obj = ImagePreProcessor(image, defaultValues)
             obj.image = image;
             obj.length = defaultValues.length;
             obj.sigma = defaultValues.sigma;
             obj.threshold = defaultValues.threshold;
 
-            global adjustedImage;
-            adjustedImage = imadjust(rgb2gray(obj.image));
-
+            obj.adjustedImage = imadjust(rgb2gray(obj.image));
             obj.performMorphologicalProcess();
-            obj.performSigmaUpdate();
         end
 
         function updateLineLength(obj, length)
@@ -43,120 +68,78 @@ classdef ImagePreProcessor
     methods(Access = private)
         function performMorphologicalProcess(obj)
             se = strel('line', obj.length, 90); % Create a line-shaped structuring element with angle of 90
-            global openedImage;
-            openedImage = imopen(obj.image, se);  % Perform opening operation
+            obj.openedImage = imopen(obj.image, se);  % Perform opening operation
             obj.performOpenImageUpdate();
         end
 
         function performOpenImageUpdate(obj)
-            obj.openThenAdjustImage();
-            obj.adjustedThenOpenImage();
+            obj.doOpenThenAdjustImage();
+            obj.doAdjustedThenOpenImage();
 
             % The sequence here is crucial
             obj.performSigmaUpdate();
-            obj.erodeImage();
+            obj.doErodeImage();
         end
 
         function performSigmaUpdate(obj)
-            obj.gaussOpenedImage();
-            obj.gaussAdjustedImage();
-            obj.gaussOpenedThenAdjustedImage();
-            obj.gaussAdjustedThenOpenImage();
+            obj.doGaussOpenedImage();
+            obj.doGaussAdjustedImage();
+            obj.doGaussOpenedThenAdjustedImage();
+            obj.doGaussAdjustedThenOpenImage();
 
             obj.performThresholdUpdate();
         end
 
         function performThresholdUpdate(obj)
-            obj.binarizeImage();
-            obj.erodeImage();
+            obj.doBinarizeImage();
+            obj.doErodeImage();
         end
 
-        function openThenAdjustImage(obj)
-            global openedImage;
-            global openedThenAdjustImage;
-            openedImageGrayScale = rgb2gray(openedImage);
-            openedThenAdjustImage = imadjust(openedImageGrayScale);
+        function doOpenThenAdjustImage(obj)
+            openedImageGrayScale = rgb2gray(obj.openedImage);
+            obj.openedThenAdjustImage = imadjust(openedImageGrayScale);
         end
 
-        function adjustedThenOpenImage(obj)
-            global adjustedThenOpenImage;
-            global adjustedImage;
+        function doAdjustedThenOpenImage(obj)
             se = strel('line', obj.length, 90);
-            adjustedThenOpenImage = imopen(adjustedImage, se);
+            obj.adjustedThenOpenImage = imopen(obj.adjustedImage, se);
         end
 
-        function erodeImage(obj)
-            global binarizedGaussAdjustedThenOpenImage;
-            global binarizedGaussOpenedImage;
-            global erodedImage;
+        function doErodeImage(obj)
             se = strel('line', obj.length, 90);
-            erodedImage = imerode(binarizedGaussOpenedImage, se);    % Perform erosion
-            erodedImage = bwareaopen(erodedImage, 100);
+            obj.erodedImage = imerode(obj.binarizedGaussOpenedImage, se);    % Perform erosion
+            obj.erodedImage = bwareaopen(obj.erodedImage, 100);
         end
 
-        function gaussOpenedImage(obj)
-            global openedImage;
-            global gaussOpenedImage;
-            openedImageGrayScale = rgb2gray(openedImage);
-            gaussOpenedImage = imgaussfilt(openedImageGrayScale, obj.sigma);
+        function doGaussOpenedImage(obj)
+            openedImageGrayScale = rgb2gray(obj.openedImage);
+            obj.gaussOpenedImage = imgaussfilt(openedImageGrayScale, obj.sigma);
         end
 
-        function gaussAdjustedImage(obj)
-            global adjustedImage;
-            global gaussAdjustedImage;
-            gaussAdjustedImage = imgaussfilt(adjustedImage, obj.sigma);
+        function doGaussAdjustedImage(obj)
+            obj.gaussAdjustedImage = imgaussfilt(obj.adjustedImage, obj.sigma);
         end
 
-        function gaussOpenedThenAdjustedImage(obj)
-            global openedThenAdjustImage;
-            global gaussOpenedThenAdjustImage;
-            gaussOpenedThenAdjustImage = imgaussfilt(openedThenAdjustImage, obj.sigma);
+        function doGaussOpenedThenAdjustedImage(obj)
+            obj.gaussOpenedThenAdjustImage = imgaussfilt(obj.openedThenAdjustImage, obj.sigma);
         end
 
-        function gaussAdjustedThenOpenImage(obj)
-            global adjustedThenOpenImage;
-            global gaussAdjustedThenOpenImage;
-            gaussAdjustedThenOpenImage = imgaussfilt(adjustedThenOpenImage, obj.sigma);
+        function doGaussAdjustedThenOpenImage(obj)
+            obj.gaussAdjustedThenOpenImage = imgaussfilt(obj.adjustedThenOpenImage, obj.sigma);
         end
 
-        function binarizeImage(obj)
-            % input
-            global openedImage;
-
-            global openedThenAdjustImage;
-            global adjustedThenOpenImage;
-
-            global gaussOpenedImage;
-            global gaussAdjustedImage;
-            global gaussAdjustedThenOpenImage;
-            global gaussOpenedThenAdjustImage;
-
-            global adjustedImage;
-
-            % binarized output
-            global binarizedOpenedImage;
-
-            global binarizedOpenedThenAdjustImage;
-            global binarizedAdjustedThenOpenImage;
-
-            global binarizedGaussOpenedImage;
-            global binarizedGaussAdjustedImage;
-            global binarizedGaussAdjustedThenOpenImage;
-            global binarizedGaussOpenedThenAdjustImage;
-
-            global binarizedAdjustedImage;
-
-            binarizedOpenedImage = imbinarize(rgb2gray(openedImage), obj.threshold);
-            binarizedOpenedThenAdjustImage = imbinarize(openedThenAdjustImage, obj.threshold);
-            binarizedAdjustedThenOpenImage = imbinarize(adjustedThenOpenImage, obj.threshold);
+        function doBinarizeImage(obj)
+            obj.binarizedOpenedImage = imbinarize(rgb2gray(obj.openedImage), obj.threshold);
+            obj.binarizedOpenedThenAdjustImage = imbinarize(obj.openedThenAdjustImage, obj.threshold);
+            obj.binarizedAdjustedThenOpenImage = imbinarize(obj.adjustedThenOpenImage, obj.threshold);
     
-            binarizedGaussOpenedImage = imbinarize(gaussOpenedImage, obj.threshold);
-            binarizedGaussAdjustedImage = imbinarize(gaussAdjustedImage, obj.threshold);
-            binarizedGaussAdjustedThenOpenImage = imbinarize(gaussAdjustedThenOpenImage, obj.threshold);
+            obj.binarizedGaussOpenedImage = imbinarize(obj.gaussOpenedImage, obj.threshold);
+            obj.binarizedGaussAdjustedImage = imbinarize(obj.gaussAdjustedImage, obj.threshold);
+            obj.binarizedGaussAdjustedThenOpenImage = imbinarize(obj.gaussAdjustedThenOpenImage, obj.threshold);
 
-            binarizedGaussOpenedThenAdjustImage = imbinarize(gaussOpenedThenAdjustImage, obj.threshold);
+            obj.binarizedGaussOpenedThenAdjustImage = imbinarize(obj.gaussOpenedThenAdjustImage, obj.threshold);
 
-            binarizedAdjustedImage = imbinarize(adjustedImage, obj.threshold);
+            obj.binarizedAdjustedImage = imbinarize(obj.adjustedImage, obj.threshold);
         end
     end
 end
