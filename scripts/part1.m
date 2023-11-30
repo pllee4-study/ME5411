@@ -29,15 +29,22 @@ enhancedThreeByThreeImgAverage = conv2(double(openedImgGrayScale), threeByThreeA
 enhancedFiveByFiveImgAverage = conv2(double(openedImgGrayScale), fiveByFiveAverageMask, 'same');
 
 % Define the 3x3 and 5x5 rotating mask
-threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 31;
-fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 167;
+% without min dispersion
+% threeByThreeRotMask = [3 5 3; 5 8 5; 3 5 3] / 31;
+% fiveByFiveRotMask = [5 6 9 6 5; 6 7 11 7 6; 9 11 16 11 9; 6 7 11 7 6; 5 6 9 6 5] / 167;
 
-% Apply the rotating mask using the conv2 function
-threeByThreeImgRotate = conv2(double(imgGrayScale), threeByThreeRotMask, 'same');
-fiveByFiveImgRotate = conv2(double(imgGrayScale), fiveByFiveRotMask, 'same');
+% % Apply the rotating mask using the conv2 function
+% threeByThreeImgRotate = conv2(double(imgGrayScale), threeByThreeRotMask, 'same');
+% fiveByFiveImgRotate = conv2(double(imgGrayScale), fiveByFiveRotMask, 'same');
 
-enhancedThreeByThreeImgRotate = conv2(double(openedImgGrayScale), threeByThreeRotMask, 'same');
-enhancedFiveByFiveImgRotate = conv2(double(openedImgGrayScale), fiveByFiveRotMask, 'same');
+% enhancedThreeByThreeImgRotate = conv2(double(openedImgGrayScale), threeByThreeRotMask, 'same');
+% enhancedFiveByFiveImgRotate = conv2(double(openedImgGrayScale), fiveByFiveRotMask, 'same');
+
+threeByThreeImgRotate = RotatingMask.Averaging(imgGrayScale, 3);
+fiveByFiveImgRotate = RotatingMask.Averaging(imgGrayScale, 5);
+
+enhancedThreeByThreeImgRotate = RotatingMask.Averaging(openedImgGrayScale, 3);
+enhancedFiveByFiveImgRotate = RotatingMask.Averaging(openedImgGrayScale, 5);
 
 % Perform image filtering using the structuring element
 dilatedImage = imdilate(img, se);  % Perform dilation
